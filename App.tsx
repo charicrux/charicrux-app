@@ -1,12 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { theme } from './src/constants/theme';
+import { ThemeProvider } from './src/hooks/useTheme';
+import Navigator from "./src/pages/Navigator";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <ThemeProvider value={theme}>
+        <Navigator />
+      </ThemeProvider>
   );
 }
 
