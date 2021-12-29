@@ -1,3 +1,4 @@
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import {
     SafeAreaView, 
@@ -11,16 +12,21 @@ import {
 import BrandButton from '../../components/BrandButton';
 import BrandTextInput from '../../components/BrandTextInput';
 import { useTheme } from '../../hooks/useTheme';
+import { Screens } from '../Navigator/enums';
 import WalletSVG from '../SVG/WalletSVG';
 
 const { width, height } = Dimensions.get("screen");
 
-const CreateAccountScreen = () => {
+const CreateAccountScreen = ({navigation} : any) => {
     const { theme: { background, text } } = useTheme();
     
+    const handleLogin = () => {
+        navigation.navigate(Screens.Account.LOGIN);
+    }
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: background }]} >
-            <KeyboardAvoidingView behavior={"position"} >
+            <KeyboardAvoidingView behavior={"position"}>
                 <View style={styles.content}>
                     <View style={styles.wallet}>
                         <WalletSVG width={width * 0.65} />
@@ -35,9 +41,9 @@ const CreateAccountScreen = () => {
                         secureTextEntry={true}
                         placeholder="Password"
                     />
-                    <BrandButton style={{ marginTop: 25 }} type="gradient" title="Mint Wallet" />
+                    <BrandButton style={{ marginTop: 25}} type="gradient" title="Mint Wallet" />
                     <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
-                        <Text style={[ styles.notice ]}>
+                        <Text onPress={handleLogin} style={[ styles.notice ]}>
                             Already Have an Account? Login
                         </Text>
                     </View>

@@ -3,6 +3,7 @@ export namespace Screens {
         LAUNCH = "launch"
     } 
     export enum Account {
-        CREATE = "create-account"
+        CREATE = "create-account",
+        LOGIN = "LOGIN"
     }
 }

@@ -17,7 +17,7 @@ const LaunchScreen = ({ navigation } : any) => {
     };
 
     const handleLogin = () => {
-
+        navigation.navigate(Screens.Account.LOGIN);
     }
 
     return (
@@ -33,7 +33,7 @@ const LaunchScreen = ({ navigation } : any) => {
             <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
             <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
                 <Text style={[ styles.notice ]}>
-                    By continueing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
+                    By continuing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
                 </Text>
             </View>
         </SafeAreaView>
