@@ -32,6 +32,7 @@ const CreateAccountScreen = () => {
                         placeholder="example@gmail.com"
                     />
                     <BrandTextInput 
+                        secureTextEntry={true}
                         placeholder="Password"
                     />
                     <BrandButton style={{ marginTop: 25 }} type="gradient" title="Mint Wallet" />
