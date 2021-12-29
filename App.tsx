@@ -6,9 +6,8 @@ import Navigator from "./src/pages/Navigator";
 import { Provider as ReduxProvider } from "react-redux";
 import store, { persistor } from "./src/store";
 import { PersistGate } from 'redux-persist/integration/react';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
 import config from './src/config';
-// import { InMemoryCache } from '@apollo/client/cache/inmemory/inMemoryCache'
 
 const { width, height } = Dimensions.get('window');
 
@@ -17,31 +16,39 @@ const ReduxBlocker = () => {
   return <SafeAreaView style={[ styles.container, { backgroundColor }]}></SafeAreaView>;
 };
 
-// type ApolloClientWrapperProps = { children: ReactChild };
+type ApolloClientWrapperProps = { children: ReactChild };
 
-// const client = new ApolloClient({ uri: `${config.api.url}/graphql`, cache: new InMemoryCache() });
 
-// const ApolloClientWrapper: React.FC<ApolloClientWrapperProps> = ({ children }) => {
-//   return (
-//     <ApolloProvider client={client}>
-//       { children }
-//     </ApolloProvider>
-//   )
-// }
+const ApolloClientWrapper: React.FC<ApolloClientWrapperProps> = ({ children }) => {
+  const token = null;
+
+  const link = new HttpLink({
+    uri: `${config.api.url}/graphql`,
+    headers: {
+      "Authorization": `Bearer ${token}`,
+    }
+  })
+
+  const client = new ApolloClient({ link, cache: new InMemoryCache() });
+
+  return (
+    <ApolloProvider client={client}>
+      { children }
+    </ApolloProvider>
+  )
+}
 
 export default function App() {
-  console.log(ApolloClient, ApolloProvider, InMemoryCache)
-
   return (
       <ReduxProvider store={store}>
         <PersistGate loading={<ReduxBlocker/>} persistor={persistor}>
-
+          <ApolloClientWrapper>
             <ThemeProvider value={theme}>
               <Suspense fallback={<></>}>
                 <Navigator />
               </Suspense>
             </ThemeProvider>
-
+          </ApolloClientWrapper>
         </PersistGate>
       </ReduxProvider>
   );
