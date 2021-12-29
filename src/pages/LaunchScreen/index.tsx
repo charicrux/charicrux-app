@@ -1,16 +1,24 @@
 
 import React from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Button, Platform  } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform  } from 'react-native';
+import BrandButton from '../../components/BrandButton';
 import BrandGradient from '../../components/BrandGradient';
 import { useTheme } from '../../hooks/useTheme';
+import { Screens } from '../Navigator/enums';
 import EtherIconSVG from '../SVG/EtherIconSVG';
-
 
 const { width, height } = Dimensions.get("screen");
 
-const LaunchScreen = () => {
-    const { theme: { background, text, secondary } } = useTheme();
+const LaunchScreen = ({ navigation } : any) => {
+    const { theme: { background, text } } = useTheme();
+
+    const handleCreateAccount = () => {
+        navigation.navigate(Screens.Account.CREATE);
+    };
+
+    const handleLogin = () => {
+
+    }
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
@@ -21,14 +29,8 @@ const LaunchScreen = () => {
                 </Animated.View>
             </View>
             <Text style={[ styles.header, { color: text } ]}>Begin Crypto Fundraising</Text>
-            <TouchableOpacity>
-                <BrandGradient style={styles.buttonContainer}>
-                    <Text style={[ styles.buttonText, { color: text }]}>Open an Account</Text>
-                </BrandGradient>
-            </TouchableOpacity>
-            <TouchableOpacity style={[ styles.buttonContainer, { marginTop: 15, backgroundColor: secondary } ]}>
-                <Text style={[ styles.buttonText, { color: text }]}>Login</Text>
-            </TouchableOpacity>
+            <BrandButton onPress={handleCreateAccount} type="gradient" title="Create an Account" />
+            <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
             <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
                 <Text style={[ styles.notice ]}>
                     By continueing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
