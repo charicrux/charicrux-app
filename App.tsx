@@ -1,4 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { StatusBar } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from './src/constants/theme';
 import { ThemeProvider } from './src/hooks/useTheme';

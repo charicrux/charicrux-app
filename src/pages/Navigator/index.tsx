@@ -4,6 +4,7 @@ import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import LaunchScreen from "../LaunchScreen";
 import CreateAccountScreen from "../CreateAccountScreen";
+import LoginScreen from "../LoginScreen"
 import { Screens } from "./enums";
 
 const Stack = createStackNavigator();
@@ -25,6 +26,14 @@ const Navigator = () => {
                         component={CreateAccountScreen}
                         options={{ 
                             headerShown: false, 
+                            gestureEnabled: true,
+                        }}
+                />
+                <Stack.Screen
+                        name={Screens.Account.LOGIN}
+                        component={LoginScreen}
+                        options={{
+                            headerShown: false,
                             gestureEnabled: true,
                         }}
                 />
