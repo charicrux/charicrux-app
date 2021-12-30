@@ -1,5 +1,5 @@
-import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import { useMutation } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
 import {
     SafeAreaView, 
     Dimensions, 
@@ -7,22 +7,44 @@ import {
     View, 
     Text, 
     Platform, 
-    KeyboardAvoidingView 
+    KeyboardAvoidingView, 
+    Keyboard
 } from 'react-native';
 import BrandButton from '../../components/BrandButton';
 import BrandTextInput from '../../components/BrandTextInput';
+import { createUserMutation, ICreateUserDTO } from '../../graphql/mutations/createUser';
 import { useTheme } from '../../hooks/useTheme';
+import { emailPattern } from '../../utils/patterns';
 import { Screens } from '../Navigator/enums';
 import WalletSVG from '../SVG/WalletSVG';
 
 const { width, height } = Dimensions.get("screen");
 
 const CreateAccountScreen = ({navigation} : any) => {
+    const [ formData, setFormData ] = useState<ICreateUserDTO>({});
+
+    const [createUser, { data:_data, loading:_loading, error:_error }] = useMutation(createUserMutation(formData));
     const { theme: { background, text } } = useTheme();
     
     const handleLogin = () => {
         navigation.navigate(Screens.Account.LOGIN);
     }
+
+    const updateFormData = (key:keyof ICreateUserDTO) => (e:string) => {
+        setFormData({ ...formData, [ key]: e });
+    };
+
+    const handleCreateAccount = () => {
+        Keyboard.dismiss();
+
+        if (!formData.email || !emailPattern.test(formData?.email)) return
+        else if (!formData.pass || formData?.pass?.length < 8) return;
+        createUser().then(e => {
+            console.log(e);
+        }).catch(_ => {
+            // Handle Create Account Error (Duplicate Email)
+        }); 
+    };  
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: background }]} >
@@ -35,13 +57,17 @@ const CreateAccountScreen = ({navigation} : any) => {
                         Crypto Wallet
                     </Text>
                     <BrandTextInput 
+                        onSubmitEditing={handleCreateAccount}
+                        onChangeText={updateFormData('email')}
                         placeholder="example@gmail.com"
                     />
                     <BrandTextInput 
+                        onSubmitEditing={handleCreateAccount}
+                        onChangeText={updateFormData('pass')}
                         secureTextEntry={true}
                         placeholder="Password"
                     />
-                    <BrandButton style={{ marginTop: 25}} type="gradient" title="Mint Wallet" />
+                    <BrandButton onPress={handleCreateAccount} style={{ marginTop: 25}} type="gradient" title="Mint Wallet" />
                     <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
                         <Text onPress={handleLogin} style={[ styles.notice ]}>
                             Already Have an Account? Login
