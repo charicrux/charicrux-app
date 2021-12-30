@@ -1,6 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { Transition } from 'react-transition-group';
 import {
     SafeAreaView, 
     Dimensions, 
