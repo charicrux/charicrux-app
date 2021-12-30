@@ -27,7 +27,7 @@ const CreateTokenScreen = ({navigation} : any) => {
                 <EtherGradientTokenSVG width={width*0.7}/>
                 <Text style={styles.header}>Create a Token</Text>
                 <View style={styles.field}>
-                    <Text style={styles.innertext}>School District:</Text>
+                    <Text style={styles.innertext}>Organization:</Text>
                 </View>
                 <View style={styles.field}>
                     <Text style={styles.innertext}>

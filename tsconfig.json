@@ -4,6 +4,8 @@
     "jsx": "react",
     "jsx": "react",
     "jsx": "react",
-    "strict": true
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
   }
 }
