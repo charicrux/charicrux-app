@@ -6,4 +6,7 @@ export namespace Screens {
         CREATE = "create-account",
         LOGIN = "LOGIN"
     }
+    export enum Token {
+        CREATE = 'create-token'
+    }
 }

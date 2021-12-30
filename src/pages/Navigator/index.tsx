@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import LaunchScreen from "../LaunchScreen";
 import CreateAccountScreen from "../CreateAccountScreen";
 import LoginScreen from "../LoginScreen"
+import CreateTokenScreen from "../CreateTokenScreen";
 import { Screens } from "./enums";
 
 const Stack = createStackNavigator();
@@ -32,6 +33,14 @@ const Navigator = () => {
                 <Stack.Screen
                         name={Screens.Account.LOGIN}
                         component={LoginScreen}
+                        options={{
+                            headerShown: false,
+                            gestureEnabled: true,
+                        }}
+                />
+                <Stack.Screen
+                        name={Screens.Token.CREATE}
+                        component={CreateTokenScreen}
                         options={{
                             headerShown: false,
                             gestureEnabled: true,
