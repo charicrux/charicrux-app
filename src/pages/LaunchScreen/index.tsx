@@ -13,7 +13,7 @@ const LaunchScreen = ({ navigation } : any) => {
     const { theme: { background, text } } = useTheme();
 
     const handleCreateAccount = () => {
-        navigation.navigate(Screens.Account.CREATE);
+        navigation.navigate(Screens.Account.ORGANIZATIONS);
     };
 
     const handleLogin = () => {

@@ -7,6 +7,8 @@ import CreateAccountScreen from "../CreateAccountScreen";
 import LoginScreen from "../LoginScreen"
 import CreateTokenScreen from "../CreateTokenScreen";
 import { Screens } from "./enums";
+import TabNavigator from "../TabNavigator";
+import OrganizationScreen from "../OrganizationsScreen";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +32,14 @@ const Navigator = () => {
                             gestureEnabled: true,
                         }}
                 />
+                <Stack.Screen 
+                        name={Screens.Account.ORGANIZATIONS}
+                        component={OrganizationScreen}
+                        options={{ 
+                            headerShown: false, 
+                            gestureEnabled: true,
+                        }}
+                />
                 <Stack.Screen
                         name={Screens.Account.LOGIN}
                         component={LoginScreen}
@@ -41,6 +51,14 @@ const Navigator = () => {
                 <Stack.Screen
                         name={Screens.Token.CREATE}
                         component={CreateTokenScreen}
+                        options={{
+                            headerShown: false,
+                            gestureEnabled: true,
+                        }}
+                />
+                 <Stack.Screen
+                        name={Screens.TAB_NAVIGATOR.INITIAL}
+                        component={TabNavigator}
                         options={{
                             headerShown: false,
                             gestureEnabled: true,

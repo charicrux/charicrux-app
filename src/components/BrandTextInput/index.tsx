@@ -1,19 +1,21 @@
 import React from 'react';
-import { Dimensions, StyleSheet, TextInput, TextInputProps, View } from "react-native";
+import { Dimensions, StyleProp, StyleSheet, TextInput, TextInputProps, TextStyle, View } from "react-native";
 import { useTheme } from '../../hooks/useTheme';
 
 const { width } = Dimensions.get("screen");
 
-interface BrandTextInputProps extends TextInputProps {}
+interface BrandTextInputProps extends TextInputProps {
+    style?: StyleProp<TextStyle>,
+}
 
-const BrandTextInput : React.FC<BrandTextInputProps> = ({ ...props }) => {
+const BrandTextInput : React.FC<BrandTextInputProps> = ({ style, ...props }) => {
     const { theme: { secondary  } } = useTheme();
 
     return (
         <View>
             <TextInput 
                 placeholderTextColor={"#797979"}
-                style={[ styles.input, { backgroundColor: secondary }]}
+                style={[ styles.input, { backgroundColor: secondary }, style ]}
                 { ...props }
             />
         </View>

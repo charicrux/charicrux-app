@@ -14,7 +14,7 @@ const reducerPersisted = persistReducer({
 
 const store = createStore(reducerPersisted);
 
-const persistor = persistStore(store);
+const persistor = persistStore(store as any);
 
 export { persistor };
 

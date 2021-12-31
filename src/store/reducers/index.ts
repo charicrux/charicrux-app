@@ -1,7 +1,10 @@
 import { combineReducers } from "redux";
 import { EDefaultActions } from "../constants";
+import { IAction } from "../interfaces/action.interface";
+import { authReducer, IAuthReducer } from "./auth.reducer";
 export interface IRootReducer {
     default: IDefaultReducer,
+    auth: IAuthReducer,
 }
 
 interface IDefaultReducer {
@@ -10,9 +13,10 @@ interface IDefaultReducer {
 
 const initialState = {
     loading: false,
+
 };
 
-const defaultReducer = (state:IDefaultReducer=initialState, action:any) => {
+const defaultReducer = (state:IDefaultReducer=initialState, action:IAction) : IDefaultReducer => {
     switch(action.type) {
         case EDefaultActions.SET_LOADING: {
             return { ...state, loading: action.payload };
@@ -25,6 +29,7 @@ const defaultReducer = (state:IDefaultReducer=initialState, action:any) => {
 
 const reducers = combineReducers({
     default: defaultReducer,
+    auth: authReducer,
 });
 
 export { reducers };
