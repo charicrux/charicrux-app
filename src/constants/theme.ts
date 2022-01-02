@@ -17,7 +17,7 @@ const themePalette = {
     secondary: "#202143",
     icon: "",
     text: "#fff",
-    grey: ""
+    grey: "#797979"
 };
 
 const theme:ITheme = {

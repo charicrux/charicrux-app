@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     SafeAreaView, 
     Dimensions, 
@@ -10,6 +10,7 @@ import {
     KeyboardAvoidingView, 
     Keyboard
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import BrandButton from '../../components/BrandButton';
 import BrandTextInput from '../../components/BrandTextInput';
 import { createUserMutation, ICreateUserDTO } from '../../graphql/mutations/createUser';
@@ -17,6 +18,10 @@ import { useTheme } from '../../hooks/useTheme';
 import { emailPattern } from '../../utils/patterns';
 import { Screens } from '../Navigator/enums';
 import WalletSVG from '../SVG/WalletSVG';
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons"; 
+import { useDispatch } from 'react-redux';
+import { setAccessToken } from '../../store/actions/auth.actions';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -24,23 +29,31 @@ const CreateAccountScreen = ({navigation} : any) => {
     const [ formData, setFormData ] = useState<ICreateUserDTO>({});
 
     const [createUser, { data:_data, loading:_loading, error:_error }] = useMutation(createUserMutation(formData));
-    const { theme: { background, text } } = useTheme();
+    const { theme: { background, text, grey } } = useTheme();
     
     const handleLogin = () => {
         navigation.navigate(Screens.Account.LOGIN);
     }
 
-    const updateFormData = (key:keyof ICreateUserDTO) => (e:string) => {
-        setFormData({ ...formData, [ key]: e });
+    const handleHome = () => {
+        navigation.navigate(Screens.TAB_NAVIGATOR.INITIAL);
     };
+
+    const updateFormData = (key:keyof ICreateUserDTO) => (e:string) => {
+        setFormData({ ...formData, [ key]: e })
+    };
+
+    const dispatch = useDispatch();
 
     const handleCreateAccount = () => {
         Keyboard.dismiss();
 
         if (!formData.email || !emailPattern.test(formData?.email)) return
         else if (!formData.pass || formData?.pass?.length < 8) return;
-        createUser().then(e => {
-            console.log(e);
+        createUser().then(({ data }) => {
+            const { accessToken, ...user } = data.createUser; 
+            dispatch(setAccessToken(accessToken));
+            handleHome();
         }).catch(_ => {
             // Handle Create Account Error (Duplicate Email)
         }); 
@@ -69,9 +82,12 @@ const CreateAccountScreen = ({navigation} : any) => {
                     />
                     <BrandButton onPress={handleCreateAccount} style={{ marginTop: 25}} type="gradient" title="Mint Wallet" />
                     <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
-                        <Text onPress={handleLogin} style={[ styles.notice ]}>
-                            Already Have an Account? Login
-                        </Text>
+                        <TouchableOpacity style={styles.loginContainer} onPress={handleLogin}>
+                            <Text style={[ styles.notice ]}>
+                                Already Have an Account? Login
+                            </Text>
+                            <FontAwesomeIcon color={grey} icon={faAngleRight} />
+                        </TouchableOpacity>
                     </View>
                 </View>
             </KeyboardAvoidingView>
@@ -96,6 +112,14 @@ const styles = StyleSheet.create({
         transform: [{ rotateZ: "-15deg" }],
         marginTop: height * 0.05,
     },
+    loginContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: width,
+        alignItems: 'center',
+        marginBottom: 25,
+    },
     header: {
         marginTop: 25 + (height * 0.05),
         marginBottom: 25,
@@ -105,8 +129,6 @@ const styles = StyleSheet.create({
     notice: {
         textAlign: 'center',
         color: "#797979",
-        marginBottom: 15,
-        width: width * 0.8,
     }
 });
 
