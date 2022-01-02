@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { NavigationContainer } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
     SafeAreaView, 
@@ -22,6 +22,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons"; 
 import { useDispatch } from 'react-redux';
 import { setAccessToken } from '../../store/actions/auth.actions';
+import { useMutation } from '@apollo/client';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -54,7 +55,7 @@ const CreateAccountScreen = ({navigation} : any) => {
             const { accessToken, ...user } = data.createUser; 
             dispatch(setAccessToken(accessToken));
             handleHome();
-        }).catch(_ => {
+        }).catch((_: any) => {
             // Handle Create Account Error (Duplicate Email)
         }); 
     };  

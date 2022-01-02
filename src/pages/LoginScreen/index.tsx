@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
     SafeAreaView, 
     Dimensions, 
@@ -7,33 +7,58 @@ import {
     View, 
     Text, 
     Platform, 
-    KeyboardAvoidingView 
+    KeyboardAvoidingView, 
+    Keyboard
 } from 'react-native';
 import BrandButton from '../../components/BrandButton';
 import BrandTextInput from '../../components/BrandTextInput';
 import { useTheme } from '../../hooks/useTheme';
 import { Screens } from '../Navigator/enums';
+import { ILoginDTO, loginQuery } from "../../graphql/queries/login";
 import { NavigationRouteContext } from '@react-navigation/native';
+import { ILogin } from "./interfaces/login.interface";
+import { useQuery } from '@apollo/client';
 
 const { width, height } = Dimensions.get("screen");
 
 const LoginScreen = ({navigation} : any) => {
     const { theme: { background, text } } = useTheme();
+    const {loading, error, data} = useQuery(loginQuery);
+
+    const [ formData, setFormData ] = useState<ILoginDTO>({});
 
     const handleCreateAccount = () => {
         navigation.navigate(Screens.Account.CREATE);
     }
+
+    const handleLogin = () => {
+        Keyboard.dismiss();
+        
+        if(!formData.email || !formData.pass) {return;}
+
+        if(data.email == formData.email && data.pass == formData.pass) {
+            navigation.navigate(Screens.Initial.LAUNCH);
+        } else {
+            navigation.navigate(Screens.Account.LOGIN);
+        }
+    }
+
+    const updateFormData = (key:keyof ILoginDTO) => (e:string) => {
+        setFormData({ ...formData, [ key]: e })
+    };
 
     return (
         <SafeAreaView style={[styles.container]} >
             <View style={styles.displayRect}>
                 <BrandTextInput 
                     placeholder="Email"
+                    onChangeText={updateFormData('email')}
                 />
                 <BrandTextInput secureTextEntry={true}
                     placeholder = 'Password'
+                    onChangeText={updateFormData('pass')}
                 />
-                <BrandButton style={{ marginTop: 50 }} type="gradient" title="Sign In" />
+                <BrandButton onPress={handleLogin} style={{ marginTop: 50 }} type="gradient" title="Sign In" />
                 <Text style={[styles.or]}>Or</Text>
                 <View style={[styles.horizontalLineLeft]}/>
                 <View style={[styles.horizontalLineRight]}/>
