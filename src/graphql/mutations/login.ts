@@ -5,11 +5,11 @@ export interface ILoginDTO {
     pass?: string,
 }
 
-export const loginQuery = gql`
-        query login($query: String!) {
-            login(query: $query) {
+export const loginClientMutation = gql`
+        mutation loginClient($input: LoginUserDTO!) {
+            loginUser(input: $input) {
                 email,
-                pass
+                accessToken,
             }
         }
     `
