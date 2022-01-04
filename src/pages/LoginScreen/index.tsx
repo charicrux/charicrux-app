@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         height: height - 75,
         flexDirection: "column",
+        justifyContent: 'center',
     },
     wallet: {
         marginTop: height * 0.05,
