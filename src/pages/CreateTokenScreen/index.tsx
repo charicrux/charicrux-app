@@ -1,5 +1,7 @@
+import { useMutation } from '@apollo/client';
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import { create } from 'lodash';
+import React, { useState } from 'react';
 import {
     SafeAreaView, 
     Dimensions, 
@@ -7,11 +9,13 @@ import {
     View, 
     Text, 
     Platform, 
-    KeyboardAvoidingView 
+    KeyboardAvoidingView, 
+    Button
 } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
+import { createTokenMutation, ICreateTokenDTO } from '../../graphql/mutations/createToken';
 import { useTheme } from '../../hooks/useTheme';
 import { Screens } from '../Navigator/enums';
 import EtherGradientTokenSVG from '../SVG/EtherGradientTokenSVG';
@@ -19,7 +23,17 @@ import EtherGradientTokenSVG from '../SVG/EtherGradientTokenSVG';
 const { width, height } = Dimensions.get("screen");
 
 const CreateTokenScreen = ({navigation} : any) => {
+    const [formData, setFormData] = useState<ICreateTokenDTO>({});
 
+    const required = 0.001;
+    let held = 0;
+    const updateHeld = ( ether: number ) => {}
+
+    const [createToken, { data:_data, loading:_loading, error:_error }] = useMutation(createTokenMutation(formData));
+
+    const updateFormData = (key:keyof ICreateTokenDTO) => (e:string) => {
+        setFormData({ ...formData, [ key]: e })
+    };
 
     return (
         <SafeAreaView style={[styles.container]}>
@@ -28,6 +42,7 @@ const CreateTokenScreen = ({navigation} : any) => {
                 <Text style={styles.header}>Create a Token</Text>
                 <View style={styles.field}>
                     <Text style={styles.innertext}>Organization:</Text>
+                    onChangeText={updateFormData('name')}
                 </View>
                 <View style={styles.field}>
                     <Text style={styles.innertext}>
@@ -41,9 +56,9 @@ const CreateTokenScreen = ({navigation} : any) => {
                         <Text style={styles.money}> 0 ETH</Text>
                     </Text>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => createToken}>
                     <BrandGradient style={styles.buttonContainer}>
-                        <Text style={{color: '#26FFB1', fontSize: 20}}>Create Token</Text>
+                            <Text style={{color: '#26FFB1', fontSize: 20}}>Create Token</Text>
                     </BrandGradient>
                 </TouchableOpacity>
             </View>

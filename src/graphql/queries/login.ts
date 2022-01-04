@@ -5,7 +5,8 @@ export interface ILoginDTO {
     pass?: string,
 }
 
-export const loginQuery = gql`
+export const loginQuery = () => (
+    gql`
         query login($query: String!) {
             login(query: $query) {
                 email,
@@ -13,3 +14,4 @@ export const loginQuery = gql`
             }
         }
     `
+);

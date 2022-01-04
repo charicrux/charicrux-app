@@ -23,7 +23,7 @@ const { width, height } = Dimensions.get("screen");
 
 const LoginScreen = ({navigation} : any) => {
     const { theme: { background, text } } = useTheme();
-    const {loading, error, data} = useQuery(loginQuery);
+    const {loading, error, data} = useQuery(loginQuery());
 
     const [ formData, setFormData ] = useState<ILoginDTO>({});
 
