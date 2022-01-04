@@ -3,11 +3,13 @@ import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import { theme } from './src/constants/theme';
 import { ThemeProvider } from './src/hooks/useTheme';
 import Navigator from "./src/pages/Navigator";
-import { Provider as ReduxProvider } from "react-redux";
+import { Provider as ReduxProvider, useSelector } from "react-redux";
 import store, { persistor } from "./src/store";
 import { PersistGate } from 'redux-persist/integration/react';
 import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
 import config from './src/config';
+import { IRootReducer } from './src/store/reducers';
+import { getAccessToken } from './src/store/selectors/auth.selectors';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,12 +22,13 @@ type ApolloClientWrapperProps = { children: ReactChild };
 
 
 const ApolloClientWrapper: React.FC<ApolloClientWrapperProps> = ({ children }) => {
-  const token = null;
-
+  const state = useSelector((state:IRootReducer) => state);
+  const accessToken = getAccessToken(state);
+  
   const link = new HttpLink({
     uri: `${config.api.url}/graphql`,
     headers: {
-      "Authorization": `Bearer ${token}`,
+      "Authorization": `Bearer ${accessToken}`,
     }
   })
 

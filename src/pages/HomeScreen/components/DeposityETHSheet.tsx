@@ -1,8 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import BottomSheet from "reanimated-bottom-sheet";
 import BrandButton from "../../../components/BrandButton";
 import { useTheme } from "../../../hooks/useTheme";
+import { IRootReducer } from "../../../store/reducers";
+import { getUserOrganization } from "../../../store/selectors/user.selectors";
 import PiggyBankSVG from "../../SVG/PiggyBankSVG";
 
 const { width, height } = Dimensions.get("screen");
@@ -10,6 +13,8 @@ const { width, height } = Dimensions.get("screen");
 const DeposityETHSheet = () => {
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height - 200).current;
+    const state = useSelector((state:IRootReducer) => state);
+    const organization = getUserOrganization(state);
 
     const { theme: { background, text, grey }} = useTheme();
 
@@ -26,9 +31,9 @@ const DeposityETHSheet = () => {
     const renderMPSelector = () => {
         return (
             <View style={[styles.container, { backgroundColor: background, height: sheetHeight - 25, marginTop: 15 }]}>
-                <Text style={[ styles.header, { color: text }]}>Deposit ETH</Text>
-                <PiggyBankSVG width={width * 0.75} />
-                <Text style={[ styles.text, { color: text }]}>Let's Deposit Some Ether to Get Started.</Text>
+                <Text style={[ styles.header, { color: text }]}>Deposit Ethereum.</Text>
+                <PiggyBankSVG width={width * 0.8} />
+                <Text style={[ styles.text, { color: text }]}>Let's Deposit Some Ether to Buy Some { organization?.symbol }!</Text>
                 <View style={styles.nextContainer}>
                     <BrandButton type="gradient" title="Explore Deposit Methods"/>
                     <TouchableOpacity onPress={handleSkip}>

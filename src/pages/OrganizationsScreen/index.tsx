@@ -23,8 +23,8 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
         variables: { query: searchQuery }
     });
 
-    const handleOrganizationPress = (_:IOrganization) => {
-        navigation.navigate(Screens.Account.CREATE);
+    const handleOrganizationPress = (organization:IOrganization) => {
+        navigation.navigate(Screens.Account.CREATE, { ...organization });
     };
 
     return (

@@ -20,6 +20,7 @@ import { setAccessToken } from '../../store/actions/auth.actions';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import WorldNetworkSVG from '../SVG/WorldNetworkSVG';
+import { setAggregatedUser } from '../../store/actions/user.actions';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -46,7 +47,8 @@ const LoginScreen = ({navigation} : any) => {
         if(!formData.email || !formData.pass) {return;}
 
         loginUser().then(({ data } : any) => {
-            const { accessToken, ...user } = data.loginUser; 
+            const { accessToken, ...aggregatedUser } = data.loginUser; 
+            dispatch(setAggregatedUser(aggregatedUser));
             dispatch(setAccessToken(accessToken));
             handleHome();
         }).catch((_: any) => {
