@@ -3,14 +3,14 @@ import {
 } from "redux";
 
 import { reducers } from "./reducers";
-import { AsyncStorage } from 'react-native';
-//import { AsyncStorage } from '@react-native-community/async-storage';
+//import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer, persistStore  } from 'redux-persist';
 
 const reducerPersisted = persistReducer({
     key: "root",
     storage: AsyncStorage,
-    blacklist: [],
+    blacklist: [ "auth" ],
 }, reducers);
 
 const store = createStore(reducerPersisted);

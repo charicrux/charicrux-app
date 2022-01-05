@@ -1,12 +1,10 @@
-import { NavigationContainer } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     SafeAreaView, 
     Dimensions, 
     StyleSheet, 
     View, 
     Text, 
-    Platform, 
     KeyboardAvoidingView, 
     Keyboard
 } from 'react-native';
@@ -23,13 +21,17 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
 import { setAccessToken } from '../../store/actions/auth.actions';
 import { useMutation } from '@apollo/client';
+import { IOrganization } from '../OrganizationsScreen/interfaces/organization.interface';
+import { setAggregatedUser } from '../../store/actions/user.actions';
 
 const { width, height } = Dimensions.get("screen");
 
-const CreateAccountScreen = ({navigation} : any) => {
+const CreateAccountScreen = ({ route, navigation} : any) => {
     const [ formData, setFormData ] = useState<ICreateUserDTO>({});
 
-    const [createUser, { data:_data, loading:_loading, error:_error }] = useMutation(createUserMutation(formData));
+    const [createUser, { data:_data, loading:_loading, error:_error }] = useMutation<unknown, { input: ICreateUserDTO }>(createUserMutation(), {
+        variables: { input: { ...formData }}
+    });
     const { theme: { background, text, grey } } = useTheme();
     
     const handleLogin = () => {
@@ -39,6 +41,13 @@ const CreateAccountScreen = ({navigation} : any) => {
     const handleHome = () => {
         navigation.navigate(Screens.TAB_NAVIGATOR.INITIAL);
     };
+
+    const setOrganization = useCallback(() => {
+        const organization:IOrganization = route.params; 
+        if (organization) updateFormData("organizationId")(organization._id);
+    }, [ route.params ]);
+
+    useEffect(setOrganization, [ setOrganization ]);
 
     const updateFormData = (key:keyof ICreateUserDTO) => (e:string) => {
         setFormData({ ...formData, [ key]: e })
@@ -52,7 +61,8 @@ const CreateAccountScreen = ({navigation} : any) => {
         if (!formData.email || !emailPattern.test(formData?.email)) return
         else if (!formData.pass || formData?.pass?.length < 8) return;
         createUser().then(({ data } : any) => {
-            const { accessToken, ...user } = data.createUser; 
+            const { accessToken, ...aggregatedUser } = data.createUser; 
+            dispatch(setAggregatedUser(aggregatedUser));
             dispatch(setAccessToken(accessToken));
             handleHome();
         }).catch((_: any) => {

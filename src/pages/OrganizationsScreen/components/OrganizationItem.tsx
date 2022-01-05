@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dimensions, StyleSheet, View, Text  } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "../../../hooks/useTheme";
@@ -6,6 +6,7 @@ import { IOrganization } from "../interfaces/organization.interface";
 import Svg, { Text as SVGText } from "react-native-svg";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import FadeIn from "../../../components/FadeIn";
 
 const { width } = Dimensions.get('screen');
 
@@ -17,6 +18,9 @@ type OrganizationItemProps = {
 const OrganizationItem : React.FC<OrganizationItemProps> = ({ organization, handlePress }) => {
     const { theme: { background, secondary, text }} = useTheme();
 
+    const [ mounted, setMounted ] = useState(false);
+    useEffect(() => { setMounted(true); () => setMounted(false) }, []);
+
     const compressedSymbol = useMemo(() => {
         return organization.symbol?.slice(0, 2);
     }, [ organization.symbol ]);
@@ -24,29 +28,31 @@ const OrganizationItem : React.FC<OrganizationItemProps> = ({ organization, hand
     const handleOrganizationPress = () => handlePress(organization);
 
     return (
-        <TouchableOpacity onPress={handleOrganizationPress} style={[ styles.container, { backgroundColor: secondary }]}>
-            <View style={[ styles.symbolLogoContainer, { backgroundColor: background }]}>
-            <Svg height="60" width="60">
-                <SVGText
-                    fill="none"
-                    stroke="#fff"
-                    fontSize="20"
-                    fontFamily="Verdana"
-                    fontWeight="bold"
-                    x="30.5"
-                    y="37.5"
-                    textAnchor="middle"
-                >
-                    { compressedSymbol }
-                </SVGText>
-            </Svg>
-            </View>
-            <View style={styles.description}>
-                <Text style={[ styles.symbol, { color: text }]}>{ organization.symbol }</Text>
-                <Text style={[{ fontSize: 13, color: text }]}>{ organization.name }</Text>
-            </View>
-            <FontAwesomeIcon color={text} icon={faAngleRight} />
-        </TouchableOpacity>
+        <FadeIn show={mounted}>
+            <TouchableOpacity onPress={handleOrganizationPress} style={[ styles.container, { backgroundColor: secondary }]}>
+                <View style={[ styles.symbolLogoContainer, { backgroundColor: background }]}>
+                <Svg height="60" width="60">
+                    <SVGText
+                        fill="none"
+                        stroke="#fff"
+                        fontSize="20"
+                        fontFamily="Verdana"
+                        fontWeight="bold"
+                        x="30.5"
+                        y="37.5"
+                        textAnchor="middle"
+                    >
+                        { compressedSymbol }
+                    </SVGText>
+                </Svg>
+                </View>
+                <View style={styles.description}>
+                    <Text style={[ styles.symbol, { color: text }]}>{ organization.symbol }</Text>
+                    <Text style={[{ fontSize: 13, color: text }]}>{ organization.name }</Text>
+                </View>
+                <FontAwesomeIcon color={text} icon={faAngleRight} />
+            </TouchableOpacity>
+        </FadeIn>
     )
 }
 

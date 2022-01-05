@@ -8,7 +8,7 @@ interface IBrandGradientTextProps {
 const BrandGradientText : React.FC<IBrandGradientTextProps> = ({ text }) => {
     return (
         <GradientText 
-            end={0.15}
+            end={0.25}
             style={{ fontWeight: '600', fontSize: 13 }}
             colors={['rgba(178, 40, 188, 0.47)', '#666AFF',]}
         >

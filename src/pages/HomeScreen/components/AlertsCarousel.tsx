@@ -1,9 +1,12 @@
-import React, { ReactElement, useRef, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import Timeline from "react-native-snap-carousel";
 import { Dimensions, StyleSheet, View, Text } from "react-native";
 import { useTheme } from "../../../hooks/useTheme";
 import BrandGradientText from "../../../components/BrandGradientText";
 import UserCoin from "../../../components/UserCoin";
+import { useSelector } from "react-redux";
+import { IRootReducer } from "../../../store/reducers";
+import { getUserOrganization } from "../../../store/selectors/user.selectors";
 
 const { width } = Dimensions.get("screen");
 
@@ -38,6 +41,8 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
 
 const AlertsCarousel = () => {
     const carouselClones = useRef(3).current; 
+    const state = useSelector((state:IRootReducer) => state);
+    const organization = getUserOrganization(state);
 
     const renderWeekTimeline = ({ item }: { item: IAlertItem }) => {
         return (
@@ -53,15 +58,32 @@ const AlertsCarousel = () => {
         )
     };
 
-    const [ items, setItems ] = useState<IAlertItem[]>([{
-        title: "Beginners Guide.",
-        description: "To start, invest in SBSD, your token. This will also enable you to unlock the foreign portfolio.",
-        button: {
-            callback: () => {},
-            title: "Buy SBSD",
-        },
-        image: renderUserCoin
-    }]);
+    const [ items, setItems ] = useState<IAlertItem[]>([]);
+
+    const injectItems = useCallback(() => {
+        const newItems:IAlertItem[] = [];
+        newItems.push({
+            title: "Deposit Ethereum.",
+            description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
+            button: {
+                callback: () => {},
+                title: `Explore Methods`,
+            },
+            image: renderUserCoin
+        });
+        newItems.push({
+            title: "Beginners Guide.",
+            description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
+            button: {
+                callback: () => {},
+                title: `Buy ${organization?.symbol}`,
+            },
+            image: renderUserCoin
+        });
+        setItems(newItems);
+    }, [ organization ]); 
+
+    useEffect(injectItems, [ injectItems ]);
 
     return (
         <View style={styles.container}>
