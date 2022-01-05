@@ -23,7 +23,7 @@ const HomeScreen = () => {
     const organization = getUserOrganization(state);
     const accessToken = getAccessToken(state);
 
-    const { data, refetch, error } = useQuery(getWalletBalanceQuery());
+    const { data, refetch, error, loading } = useQuery(getWalletBalanceQuery());
 
     const refetchClientData = useCallback(() => {
         if (accessToken && error) refetch();
@@ -32,9 +32,10 @@ const HomeScreen = () => {
 
     const walletBalance = useMemo(() => {
         const balance = data?.getWalletBalance; 
-        if (!balance) return null; 
+        if (!balance && !!error?.clientErrors.length === false) return "0.00"; 
+        else if (!balance && !!error?.clientErrors.length) return null; 
         else return balance?.toLocaleString("en",{useGrouping: false,minimumFractionDigits: 2}); 
-    }, [ data ]);
+    }, [ data, error ]);
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>

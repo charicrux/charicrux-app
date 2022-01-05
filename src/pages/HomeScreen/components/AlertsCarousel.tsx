@@ -1,6 +1,6 @@
 import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import Timeline from "react-native-snap-carousel";
-import { Dimensions, StyleSheet, View, Text } from "react-native";
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "../../../hooks/useTheme";
 import BrandGradientText from "../../../components/BrandGradientText";
 import UserCoin from "../../../components/UserCoin";
@@ -26,7 +26,7 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
     const { theme: { background, secondary, text, grey } } = useTheme();
 
     return (
-        <View style={[ styles.item, { backgroundColor: secondary }]}>
+        <TouchableOpacity style={[ styles.item, { backgroundColor: secondary }]}>
             <View style={[ styles.innerItemContainer, { borderColor: background }]}>
                 { image && image() }
                 <View style={styles.itemContent}>
@@ -35,7 +35,7 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
                     <BrandGradientText text={button?.title || ""}/>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
