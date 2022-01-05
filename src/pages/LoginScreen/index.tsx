@@ -25,7 +25,9 @@ import { setAggregatedUser } from '../../store/actions/user.actions';
 const { width, height } = Dimensions.get("screen");
 
 const LoginScreen = ({navigation} : any) => {
+
     const { theme: { background, text, grey } } = useTheme();
+
     const [ formData, setFormData ] = useState<ILoginDTO>({});
     const [loginUser, { data:_data, loading:_loading, error:_error }] = useMutation<unknown, { input: ILoginDTO }>(loginClientMutation, { 
         variables: { input: { ...formData }}
