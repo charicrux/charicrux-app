@@ -61,7 +61,7 @@ const Navigator = () => {
                         component={TabNavigator}
                         options={{
                             headerShown: false,
-                            gestureEnabled: true,
+                            gestureEnabled: false,
                         }}
                 />
             </Stack.Navigator>

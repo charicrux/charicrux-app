@@ -51,7 +51,7 @@ const CreateAccountScreen = ({navigation} : any) => {
 
         if (!formData.email || !emailPattern.test(formData?.email)) return
         else if (!formData.pass || formData?.pass?.length < 8) return;
-        createUser().then(({ data }) => {
+        createUser().then(({ data } : any) => {
             const { accessToken, ...user } = data.createUser; 
             dispatch(setAccessToken(accessToken));
             handleHome();
@@ -82,7 +82,12 @@ const CreateAccountScreen = ({navigation} : any) => {
                         placeholder="Password"
                     />
                     <BrandButton onPress={handleCreateAccount} style={{ marginTop: 25}} type="gradient" title="Mint Wallet" />
-                    <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
+                    <View style={styles.orContainer}>
+                        <View style={[styles.horizontalLineLeft]}/>
+                        <Text style={[styles.or]}>Or</Text>
+                        <View style={[styles.horizontalLineRight]}/>
+                    </View>
+                    <View style={{ marginTop: 30 }}>
                         <TouchableOpacity style={styles.loginContainer} onPress={handleLogin}>
                             <Text style={[ styles.notice ]}>
                                 Already Have an Account? Login
@@ -130,7 +135,29 @@ const styles = StyleSheet.create({
     notice: {
         textAlign: 'center',
         color: "#797979",
-    }
+    },
+    orContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 30,
+        justifyContent: "space-around"
+    },
+    or: {
+        color: '#8F8F8F',
+        width: "10%",
+        textAlign: 'center',
+    },
+    horizontalLineLeft: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#8F8F8F',
+        width: '35%',
+    },
+    horizontalLineRight: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#8F8F8F',
+        width: '35%'
+    },
 });
 
 export default CreateAccountScreen;

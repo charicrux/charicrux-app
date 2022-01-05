@@ -2,7 +2,7 @@ export {};
 
 const config = {
     api: {
-        url: "",
+        url: "http://charicrux-api.mahitm.com",
     }
 };
 

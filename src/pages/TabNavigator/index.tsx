@@ -61,7 +61,7 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                         shadowRadius: 10,
                         zIndex: 1,
                         elevation: 1,
-                        shadowOpacity: 0.05,
+                        shadowOpacity: 0.1,
 
                     },
                     headerShown: false,
