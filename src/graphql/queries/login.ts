@@ -10,7 +10,7 @@ export const loginQuery = () => (
         query login($query: String!) {
             login(query: $query) {
                 email,
-                pass
+                pass,
             }
         }
     `

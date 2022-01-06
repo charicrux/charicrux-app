@@ -6,11 +6,12 @@ import BrandButton from "../../../components/BrandButton";
 import { useTheme } from "../../../hooks/useTheme";
 import { IRootReducer } from "../../../store/reducers";
 import { getUserOrganization } from "../../../store/selectors/user.selectors";
+import { Screens } from "../../Navigator/enums";
 import PiggyBankSVG from "../../SVG/PiggyBankSVG";
 
 const { width, height } = Dimensions.get("screen");
 
-const DeposityETHSheet = () => {
+const DeposityETHSheet = ({ navigation } : any) => {
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height - 200).current;
     const state = useSelector((state:IRootReducer) => state);
@@ -28,6 +29,8 @@ const DeposityETHSheet = () => {
         
     };
 
+    const handleDepositMethods = () => navigation.navigate(Screens.Wallet.DEPOSIT_METHODS);
+
     const renderMPSelector = () => {
         return (
             <View style={[styles.container, { backgroundColor: background, height: sheetHeight - 25, marginTop: 15 }]}>
@@ -35,7 +38,7 @@ const DeposityETHSheet = () => {
                 <PiggyBankSVG width={width * 0.8} />
                 <Text style={[ styles.text, { color: text }]}>Let's Deposit Some Ether to Buy Some { organization?.symbol }!</Text>
                 <View style={styles.nextContainer}>
-                    <BrandButton type="gradient" title="Explore Deposit Methods"/>
+                    <BrandButton onPress={handleDepositMethods} type="gradient" title="Explore Deposit Methods"/>
                     <TouchableOpacity onPress={handleSkip}>
                         <Text style={[ styles.skip, { color: grey }]}>Skip</Text>
                     </TouchableOpacity>

@@ -2,7 +2,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Dimensions, SafeAreaView, ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BrandContainer from "../../components/BrandContainer";
 import { useTheme } from "../../hooks/useTheme";
 import { IRootReducer } from "../../store/reducers";
@@ -14,28 +14,34 @@ import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { getWalletBalanceQuery } from "../../graphql/queries/getWalletBalance";
 import { useQuery } from "@apollo/client";
 import { getAccessToken } from "../../store/selectors/auth.selectors";
+import { Screens } from "../Navigator/enums";
+import { setUserBalance } from "../../store/actions/user.actions";
 
 const { width, height } = Dimensions.get("screen");
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation } : any) => {
     const { theme: { background, text, grey } } = useTheme();
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
     const accessToken = getAccessToken(state);
 
-    const { data, refetch, error, loading } = useQuery(getWalletBalanceQuery());
+    const { data:balanceResponse, refetch, error } = useQuery(getWalletBalanceQuery());
+
+    const handleDepositMethods = () => {
+        navigation.navigate(Screens.Wallet.DEPOSIT_METHODS);
+    };
 
     const refetchClientData = useCallback(() => {
-        if (accessToken && error) refetch();
-    }, [ accessToken ]);
+       if (accessToken && error) refetch();
+    }, [ accessToken, error ]);
     useEffect(refetchClientData, [ refetchClientData ]);
 
     const walletBalance = useMemo(() => {
-        const balance = data?.getWalletBalance; 
+        const balance = balanceResponse?.getWalletBalance; 
         if (!balance && !!error?.clientErrors.length === false) return "0.00"; 
         else if (!balance && !!error?.clientErrors.length) return null; 
         else return balance?.toLocaleString("en",{useGrouping: false,minimumFractionDigits: 2}); 
-    }, [ data, error ]);
+    }, [ balanceResponse, error ]);
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
@@ -43,7 +49,7 @@ const HomeScreen = () => {
                 <BrandContainer header="Crypto Wallet" style={{ height: 350 }}>
                     <></>
                 </BrandContainer>
-                <TouchableOpacity style={styles.buyingPowerContainer}>
+                <TouchableOpacity onPress={handleDepositMethods} style={styles.buyingPowerContainer}>
                     <Text style={[ styles.buyingPowerLabel, { color: text }]}>Buying Power</Text>
                     <View style={styles.buyingPowerAmountContainer}>
                         <FontAwesomeIcon color={text} icon={faEthereum} />    
@@ -53,7 +59,7 @@ const HomeScreen = () => {
                         <FontAwesomeIcon color={text} icon={faAngleRight} />
                     </View>
                 </TouchableOpacity>
-                <AlertsCarousel />
+                <AlertsCarousel navigation={navigation} />
                 <BrandContainer header="Foreign Portfolio" style={[{ marginTop: 15 }]}>
                    <View style={styles.foreignPortfolioContainer}>
                        <View style={[ styles.lockIconContainer, { marginTop: -50 }]}>
@@ -63,7 +69,7 @@ const HomeScreen = () => {
                    </View>
                 </BrandContainer>
            </ScrollView>
-           <DeposityETHSheet />
+           <DeposityETHSheet navigation={navigation} />
         </SafeAreaView>
     )
 }

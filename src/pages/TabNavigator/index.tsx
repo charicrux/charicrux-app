@@ -76,10 +76,10 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                         name={TabNavigatorScreens.HOME} 
                         children={() => <HomeScreen navigation={navigation} { ...props } />}
                     />
-                    {/* <Tabs.Screen 
+                    <Tabs.Screen 
                         name={TabNavigatorScreens.ACCOUNT} 
                         children={() => <HomeScreen navigation={navigation} { ...props } />}
-                    /> */}
+                    />
             </Tabs.Navigator>
         </>
     )

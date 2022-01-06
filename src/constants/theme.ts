@@ -2,6 +2,7 @@ export interface ITheme {
     palette: {
         primary: string,
         secondary: string,
+        purple: string,
     },
     theme: {
         background:string,
@@ -24,6 +25,7 @@ const theme:ITheme = {
     palette: {
         primary: "#16152F",
         secondary: "#202143",
+        purple: "#6C63FF"
     }, 
     theme:themePalette,
 };

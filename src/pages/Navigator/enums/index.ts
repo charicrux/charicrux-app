@@ -7,6 +7,9 @@ export namespace Screens {
         LOGIN = "LOGIN",
         ORGANIZATIONS = "organizations"
     }
+    export enum Wallet {
+        DEPOSIT_METHODS = "deposit-methods"
+    }
     export enum Token {
         CREATE = 'create-token'
     }

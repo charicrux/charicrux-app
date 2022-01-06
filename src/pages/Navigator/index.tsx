@@ -9,6 +9,7 @@ import CreateTokenScreen from "../CreateTokenScreen";
 import { Screens } from "./enums";
 import TabNavigator from "../TabNavigator";
 import OrganizationScreen from "../OrganizationsScreen";
+import DepositMethodsScreen from "../DepositMethodsScreen";
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,16 @@ const Navigator = () => {
                         options={{
                             headerShown: false,
                             gestureEnabled: false,
+                        }}
+                />
+                 <Stack.Screen 
+                        name={Screens.Wallet.DEPOSIT_METHODS}
+                        component={DepositMethodsScreen}
+                        options={{ 
+                            headerShown: true,
+                            headerBackTitleVisible: false,
+                            headerTitle: "",
+                            gestureEnabled: true,
                         }}
                 />
             </Stack.Navigator>
