@@ -70,7 +70,7 @@ const AlertsCarousel = ({ navigation } : any) => {
 
     const injectItems = useCallback(() => {
         const newItems:IAlertItem[] = [];
-        if (balance === 0) {
+        if (!balance) {
             newItems.push({
                 title: "Deposit Ethereum.",
                 description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
@@ -85,13 +85,13 @@ const AlertsCarousel = ({ navigation } : any) => {
             title: "Beginners Guide.",
             description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
             button: {
-                callback: () => {},
+                callback: () => { navigation.navigate(Screens.Token.INFO) },
                 title: `Buy ${organization?.symbol}`,
             },
             image: () => <GraphSVG width={85} />
         });
         setItems(newItems);
-    }, [ organization ]); 
+    }, [ organization, balance ]); 
 
     useEffect(injectItems, [ injectItems ]);
 

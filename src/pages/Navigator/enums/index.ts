@@ -11,7 +11,8 @@ export namespace Screens {
         DEPOSIT_METHODS = "deposit-methods"
     }
     export enum Token {
-        CREATE = 'create-token'
+        CREATE = 'create-token',
+        INFO = "token-info"
     }
     export enum TAB_NAVIGATOR {
         INITIAL = "navigator"

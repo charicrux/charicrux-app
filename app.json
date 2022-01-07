@@ -18,7 +18,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mahitmehta.charicrux"
+      "bundleIdentifier": "com.mahitm.charicrux"
     },
     "android": {
       "adaptiveIcon": {

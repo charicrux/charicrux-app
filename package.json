@@ -6,7 +6,8 @@
     "android": "react-native run-android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "build:ios": "react-native bundle --entry-file App.tsx --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios"
   },
   "dependencies": {
     "@apollo/client": "^3.5.6",

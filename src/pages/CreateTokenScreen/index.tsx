@@ -42,7 +42,7 @@ const CreateTokenScreen = ({navigation} : any) => {
                 <Text style={styles.header}>Create a Token</Text>
                 <View style={styles.field}>
                     <Text style={styles.innertext}>Organization:</Text>
-                    onChangeText={updateFormData('name')}
+                    {/* onChangeText={updateFormData('name')} */}
                 </View>
                 <View style={styles.field}>
                     <Text style={styles.innertext}>
