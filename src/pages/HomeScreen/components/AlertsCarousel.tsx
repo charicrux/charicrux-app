@@ -32,7 +32,7 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
                 <View style={styles.itemContent}>
                     <Text style={[ styles.title, { color: text }]}>{title}</Text>
                     <Text style={[ styles.description, { color: grey }]}>{description || ""}</Text>
-                    <BrandGradientText text={button?.title || ""}/>
+                    <Text>{button?.title || ""}</Text>
                 </View>
             </View>
         </View>

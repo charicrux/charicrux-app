@@ -9,6 +9,7 @@ import CreateTokenScreen from "../CreateTokenScreen";
 import { Screens } from "./enums";
 import TabNavigator from "../TabNavigator";
 import OrganizationScreen from "../OrganizationsScreen";
+import ProfileScreen from "../ProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,14 @@ const Navigator = () => {
                         options={{
                             headerShown: false,
                             gestureEnabled: false,
+                        }}
+                />
+                <Stack.Screen
+                        name={Screens.Account.VIEW}
+                        component={ProfileScreen}
+                        options={{
+                            headerShown: false,
+                            gestureEnabled: true,
                         }}
                 />
             </Stack.Navigator>

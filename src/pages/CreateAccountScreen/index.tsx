@@ -6,7 +6,8 @@ import {
     View, 
     Text, 
     KeyboardAvoidingView, 
-    Keyboard
+    Keyboard,
+    Platform
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import BrandButton from '../../components/BrandButton';
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     },
     wallet: {
         transform: [{ rotateZ: "-15deg" }],
-        marginTop: height * 0.05,
+        marginTop: Platform.OS === "ios" ? height * 0.05 : height * 0.02,
     },
     loginContainer: {
         display: 'flex',

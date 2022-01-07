@@ -22,7 +22,7 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
     const { data: { getOrganizations:organizations = [] as IOrganization[] } = {} } = useQuery(getOrganizationsQuery(), {
         variables: { query: searchQuery }
     });
-
+    console.log(organizations);
     const handleOrganizationPress = (organization:IOrganization) => {
         navigation.navigate(Screens.Account.CREATE, { ...organization });
     };

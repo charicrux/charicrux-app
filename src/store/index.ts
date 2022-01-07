@@ -3,8 +3,8 @@ import {
 } from "redux";
 
 import { reducers } from "./reducers";
-//import { AsyncStorage } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from 'react-native';
+//import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer, persistStore  } from 'redux-persist';
 
 const reducerPersisted = persistReducer({

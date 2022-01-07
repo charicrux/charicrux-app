@@ -52,7 +52,7 @@ const HomeScreen = () => {
                         <FontAwesomeIcon color={text} icon={faAngleRight} />
                     </View>
                 </TouchableOpacity>
-                <AlertsCarousel />
+                {/* <AlertsCarousel /> */}
                 <BrandContainer header="Foreign Portfolio" style={[{ marginTop: 15 }]}>
                    <View style={styles.foreignPortfolioContainer}>
                        <View style={[ styles.lockIconContainer, { marginTop: -50 }]}>

@@ -179,6 +179,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 15,
         marginVertical: 5,
+    },
+    world: {
+        width: '80%',
+        height: "10%",
     }
 });
 

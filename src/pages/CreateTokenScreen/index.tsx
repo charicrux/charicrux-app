@@ -8,10 +8,7 @@ import {
     StyleSheet, 
     View, 
     Text, 
-    Platform, 
-    KeyboardAvoidingView, 
-    Button
-} from 'react-native';
+    KeyboardAvoidingView} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
