@@ -1,7 +1,9 @@
+import { useQuery } from "@apollo/client";
 import React, { useEffect } from "react";
 import { Dimensions, SafeAreaView, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { theme } from "../../constants/theme";
+import { getAggregatedTokenQuery, IAggregatedTokenResponse } from "../../graphql/queries/getAggregatedToken";
 import { useTheme } from "../../hooks/useTheme";
 import { IRootReducer } from "../../store/reducers";
 import { getUserOrganization } from "../../store/selectors/user.selectors";
@@ -15,17 +17,24 @@ const CryptoTokenScreen = ({ navigation } : any) => {
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
 
+    const { data:tokenData, error:tokenError, loading } = useQuery<IAggregatedTokenResponse>(getAggregatedTokenQuery(), { 
+        variables: { input: { organizationId: organization?._id }}
+    })
+
     useEffect(() => {
         navigation?.setOptions({ 
-            headerTitle: `${ organization?.symbol }`,
+            headerTitle:  "",// `${ organization?.symbol }`,
             headerStyle: { 
                 backgroundColor: theme.background,
             }});
-    }, [ theme, organization ]);
+    }, [ theme ]);
+    console.log(!!tokenData, tokenData)
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: theme.background }]}>
-            <CreateTokenSheet />
+            { !!tokenError && !tokenData ? 
+                <CreateTokenSheet navigation={navigation} show={true} /> : null
+            }
         </SafeAreaView>
     )
 }

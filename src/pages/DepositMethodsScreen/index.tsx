@@ -2,7 +2,7 @@ import { useLazyQuery } from "@apollo/client";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dimensions, RefreshControl, ScrollView, StyleSheet, View, Text, Platform, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
 import { useSelector } from "react-redux";
@@ -26,9 +26,20 @@ const DepositMethodsScreen = ({ navigation } : any) => {
     const state = useSelector((state:IRootReducer) => state);
     const wallet = getUserWallet(state);
     
-    const { getWalletBalance:balance  } = apolloClient.readQuery({ 
+    const walletBalanceCache = apolloClient.readQuery({ 
         query: getWalletBalanceQuery(),
     })
+
+    const { getWalletBalance:walletBalance  } = walletBalanceCache ? walletBalanceCache : {} as any;
+
+    const balance = useMemo(() => {
+        if (!walletBalance) return "0.00"; 
+        else return walletBalance?.toLocaleString("en",{
+            useGrouping: false, 
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 5
+        }); 
+    }, [ walletBalance ]);
 
     useEffect(() => {
         navigation?.setOptions({ 
@@ -88,12 +99,13 @@ const DepositMethodsScreen = ({ navigation } : any) => {
                         Deposit Ethereum by Transfering Crypto to the Wallet Address.
                     </Text> */}
                 </View>
-                <BrandButton
-                    style={{ marginTop: Platform.OS === 'ios' ? 'auto' : 25 }} 
-                    type="gradient" 
-                    title="Deposit" 
-                />
+                
             </ScrollView>
+            <BrandButton
+                style={{ marginTop: Platform.OS === 'ios' ? 'auto' : 25, marginBottom: 50, }} 
+                type="gradient" 
+                title="Deposit" 
+            />
         </SafeAreaView>
     )
 }   
@@ -101,7 +113,10 @@ const DepositMethodsScreen = ({ navigation } : any) => {
 const styles = StyleSheet.create({
     container: {
         width,
-        minHeight: height,
+        minHeight: height - 150,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     },
     scrollView: {
         width,

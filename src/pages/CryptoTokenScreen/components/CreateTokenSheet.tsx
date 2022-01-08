@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { apolloClient } from "../../../../App";
 import BrandButton from "../../../components/BrandButton";
 import BrandTextInput from "../../../components/BrandTextInput";
 import { createTokenMutation } from "../../../graphql/mutations/createToken";
+import { getGasEstimateQuery, IGasEstimateResponse } from "../../../graphql/queries/getGasEstimate";
 import { getWalletBalanceQuery } from "../../../graphql/queries/getWalletBalance";
 import { useTheme } from "../../../hooks/useTheme";
 import { IRootReducer } from "../../../store/reducers";
@@ -15,13 +16,23 @@ import FactorySVG from "../../SVG/FactorySVG";
 
 const { width, height } = Dimensions.get("screen");
 
-const CreateTokenSheet = ({ navigation } : any) => {
+interface CreateTokenSheetProps {
+    navigation: any,
+    show: boolean,
+}
+
+const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ navigation, show }) => {
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height).current;
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
 
-    const { theme: { background, text, grey }, palette: { purple }} = useTheme();
+    const { theme: { background, grey }, palette: { purple }} = useTheme();
+
+    const { data:{ getGasEstimate } = {}} = useQuery<{ getGasEstimate: IGasEstimateResponse }>(getGasEstimateQuery(), { 
+        variables: { input: { maxGasUnits: 1000000 }},
+        // pollInterval: 15 * 1000, // 15s
+    })
 
     const [createToken, { data:_data, loading:_loading, error:_error }] = useMutation(createTokenMutation());
 
@@ -37,11 +48,13 @@ const CreateTokenSheet = ({ navigation } : any) => {
     }, [ balance ]);
 
     useEffect(() => {
-        sheetRef.current.snapTo(0);
+        sheetRef.current.snapTo(show ? 0 : 1);
     }, []);
 
     const handleDeployToken = () => {
-        createToken();
+        createToken().catch((e) => {
+            console.log(e);
+        }); 
     };  
 
     const handleSelectorBack = () => {
@@ -59,18 +72,6 @@ const CreateTokenSheet = ({ navigation } : any) => {
                     value={organization?.name}
                     editable={false}
                 />
-                {/* <View style={styles.field}>
-                    <Text style={styles.innertext}>
-                        Ether Required:
-                        <Text style={styles.money}> 0.001 ETH</Text>
-                    </Text>
-                </View>
-                <View style={styles.field}>
-                    <Text style={styles.innertext}>
-                        Ether Held:
-                        <Text style={styles.money}> 0 ETH</Text>
-                    </Text>
-                </View> */}
                 <View>
                     <View style={styles.field }>
                         <Text style={[{ color: purple }]}>Wallet Balance</Text>
@@ -78,14 +79,15 @@ const CreateTokenSheet = ({ navigation } : any) => {
                     </View>
                     <View style={styles.field }>
                         <Text style={[{ color: purple }]}>Max Gas Price</Text>
-                        <Text style={[{ color: grey }]}>0.0001 ETH (~$0.40)</Text>
+                        <Text style={[{ color: grey }]}>{ getGasEstimate?.maxGasCostETH } ETH</Text>
                     </View>
                     <View style={styles.field }>
                         <Text style={[{ color: purple }]}>Estimated Gas</Text>
-                        <Text style={[{ color: grey }]}>0.00009 ETH (~$0.36)</Text>
+                        <Text style={[{ color: grey }]}>{ getGasEstimate?.gasCostETH } ETH</Text>
                     </View>
                 </View>
                 <BrandButton 
+                    loading={_loading}
                     onPress={handleDeployToken} 
                     type="gradient" 
                     title={`Deploy ${organization?.symbol}`}

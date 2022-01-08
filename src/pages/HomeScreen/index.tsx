@@ -40,7 +40,11 @@ const HomeScreen = ({ navigation } : any) => {
         const balance = balanceResponse?.getWalletBalance; 
         if (!balance && !!error?.clientErrors.length === false) return "0.00"; 
         else if (!balance && !!error?.clientErrors.length) return null; 
-        else return balance?.toLocaleString("en",{useGrouping: false,minimumFractionDigits: 2}); 
+        else return balance?.toLocaleString("en",{
+            useGrouping: false, 
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 5,
+        }); 
     }, [ balanceResponse, error ]);
 
     return (

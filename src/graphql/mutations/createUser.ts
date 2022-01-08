@@ -16,7 +16,7 @@ export const createUserMutation = () => (
                 status,
                 accessToken,
                 wallet { _id, address },
-                organization { symbol, name },
+                organization { symbol, name, _id },
             }
         }
     `

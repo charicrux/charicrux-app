@@ -11,7 +11,7 @@ export const loginClientMutation = gql`
                 email,
                 accessToken,
                 wallet { _id, address },
-                organization { symbol, name },
+                organization { symbol, name, _id },
             }
         }
     `
