@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 30,
+        marginTop: 50,
         justifyContent: "space-around"
     },
     or: {

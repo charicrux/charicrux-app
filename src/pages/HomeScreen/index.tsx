@@ -16,6 +16,8 @@ import { useQuery } from "@apollo/client";
 import { getAccessToken } from "../../store/selectors/auth.selectors";
 import { Screens } from "../Navigator/enums";
 import { setUserBalance } from "../../store/actions/user.actions";
+import CryptoGraph from "../../components/CryptoGraph";
+import { formatPrice } from "../../utils/formatPrice";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -40,18 +42,14 @@ const HomeScreen = ({ navigation } : any) => {
         const balance = balanceResponse?.getWalletBalance; 
         if (!balance && !!error?.clientErrors.length === false) return "0.00"; 
         else if (!balance && !!error?.clientErrors.length) return null; 
-        else return balance?.toLocaleString("en",{
-            useGrouping: false, 
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 5,
-        }); 
+        else return formatPrice(balance);
     }, [ balanceResponse, error ]);
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
            <ScrollView contentContainerStyle={styles.scrollView}>
                 <BrandContainer header="Crypto Wallet" style={{ height: 350 }}>
-                    <></>
+                    <CryptoGraph style={{ height: "87.5%"}} balance={0.00}/>
                 </BrandContainer>
                 <TouchableOpacity onPress={handleDepositMethods} style={styles.buyingPowerContainer}>
                     <Text style={[ styles.buyingPowerLabel, { color: text }]}>Buying Power</Text>

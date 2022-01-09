@@ -3,18 +3,20 @@ import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useMemo, useState } from "react";
-import { Dimensions, RefreshControl, ScrollView, StyleSheet, View, Text, Platform, TouchableOpacity } from "react-native";
+import { Dimensions, RefreshControl, ScrollView, StyleSheet, View, Text, Platform, TouchableOpacity, Clipboard } from "react-native";
 import { SafeAreaView } from "react-native";
 import { useSelector } from "react-redux";
 import { apolloClient } from "../../../App";
 import BrandButton from "../../components/BrandButton";
+import CopyText from "../../components/CopyText";
 import FadeIn from "../../components/FadeIn";
 import { getWalletBalanceQuery } from "../../graphql/queries/getWalletBalance";
 import { useTheme } from "../../hooks/useTheme";
 import { IRootReducer } from "../../store/reducers";
 import { getUserWallet } from "../../store/selectors/user.selectors";
 import MoneySVG from "../SVG/MoneySVG";
-import Clipboard from "@react-native-community/clipboard";
+import DepositMethodsSheet from "./components/DepositMethodsSheet";
+// import Clipboard from "@react-native-community/clipboard";
 
 const { width, height } = Dimensions.get("window");
 
@@ -56,6 +58,10 @@ const DepositMethodsScreen = ({ navigation } : any) => {
         fetchBalance().finally(() => setLoading(false));
     };
 
+    const [ showMethods, setShowMethods ] = useState(false);
+
+    const handleShowMethods = () => setShowMethods(true);
+
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: theme.background }]}>
             <ScrollView
@@ -79,22 +85,11 @@ const DepositMethodsScreen = ({ navigation } : any) => {
                 <MoneySVG width={width * 0.95} />
                 <View>
                     <Text style={[ styles.label, { color: theme.text }]}>Wallet Address</Text>
-                    <TouchableOpacity 
-                        onPress={() => { Clipboard.setString(wallet?.address || "") }}
-                        style={[styles.walletAddressContainer, { backgroundColor: theme.secondary }]}>
-                        <ScrollView 
-                            horizontal={true} 
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ paddingHorizontal: 15, paddingRight: 50 }}
-                        >
-                            <FadeIn show={!!wallet?.address}>
-                                <Text numberOfLines={1} style={[{ color: theme.grey }]} >{ wallet?.address }</Text>
-                            </FadeIn>
-                        </ScrollView>
-                        <View style={[ styles.copyContainer, { backgroundColor: theme.secondary }]}>
-                                <FontAwesomeIcon color={"rgba(255, 255, 255, 0.5)"} size={17.5} icon={faCopy} />
-                        </View>
-                    </TouchableOpacity>
+                    <CopyText copyText={wallet?.address}>
+                        <FadeIn show={!!wallet?.address}>
+                            <Text numberOfLines={1} style={[{ color: theme.grey }]} >{ wallet?.address }</Text>
+                        </FadeIn>
+                    </CopyText>
                     {/* <Text style={[{ color: theme.grey, maxWidth: width * 0.9, paddingHorizontal: 5 }]}>
                         Deposit Ethereum by Transfering Crypto to the Wallet Address.
                     </Text> */}
@@ -102,10 +97,12 @@ const DepositMethodsScreen = ({ navigation } : any) => {
                 
             </ScrollView>
             <BrandButton
+                onPress={handleShowMethods}
                 style={{ marginTop: Platform.OS === 'ios' ? 'auto' : 25, marginBottom: 50, }} 
                 type="gradient" 
                 title="Deposit" 
             />
+             <DepositMethodsSheet setShow={setShowMethods} navigation={navigation} show={showMethods} />
         </SafeAreaView>
     )
 }   

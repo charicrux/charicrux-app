@@ -20,10 +20,11 @@ type BrandButtonProps = {
     loading?: boolean,
     type?: "gradient" | "default",
     title: string,
+    containerStyle?: StyleProp<ViewStyle>,
     style?: StyleProp<ViewStyle>,
 } & TouchableOpacityProps;
 
-const BrandButton : React.FC<BrandButtonProps> = ({ type = "default", title, style, loading = false, ...props }) => {
+const BrandButton : React.FC<BrandButtonProps> = ({ type = "default", title, style, loading = false, containerStyle, ...props }) => {
     const { theme: { text, secondary } } = useTheme();
 
     const opacityVal = useRef(new Animated.Value(1)).current;
@@ -41,7 +42,7 @@ const BrandButton : React.FC<BrandButtonProps> = ({ type = "default", title, sty
     return (
         <TouchableOpacity 
             { ...props }
-            style={styles.container}
+            style={[ styles.container, containerStyle ]}
             disabled={loading}
         >
             <View style={styles.loaderContainer}>
