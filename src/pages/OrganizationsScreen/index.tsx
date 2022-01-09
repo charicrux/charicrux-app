@@ -55,8 +55,8 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
                 }
             </View>
             <View style={{ marginTop: 25 }}>
-                <TouchableOpacity>
-                    <Text style={[ styles.notice, { color: grey }]} onPress={handleCreateOrganization}>
+                <TouchableOpacity onPress={handleCreateOrganization}>
+                    <Text style={[ styles.notice, { color: grey }]} >
                         Don't See your Organization?
                     </Text>
                 </TouchableOpacity>

@@ -19,9 +19,10 @@ const { width, height } = Dimensions.get("screen");
 interface CreateTokenSheetProps {
     navigation: any,
     show: boolean,
+    setShow: (e:boolean) => void,
 }
 
-const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ navigation, show }) => {
+const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ show, setShow }) => {
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height).current;
     const state = useSelector((state:IRootReducer) => state);
@@ -49,7 +50,7 @@ const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ navigation, show }
 
     useEffect(() => {
         sheetRef.current.snapTo(show ? 0 : 1);
-    }, []);
+    }, [ show ]);
 
     const handleDeployToken = () => {
         createToken().catch((e) => {
@@ -59,6 +60,7 @@ const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ navigation, show }
 
     const handleSelectorBack = () => {
         sheetRef.current.snapTo(1);
+        setShow(false);
     };
 
     const renderMPSelector = () => {

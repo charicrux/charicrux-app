@@ -74,6 +74,7 @@ const LoginScreen = ({navigation} : any) => {
                         Login to Wallet
                     </Text>
                     <BrandTextInput 
+                        autoFocus={true}
                         onSubmitEditing={handleLogin}
                         onChangeText={updateFormData('email')}
                         placeholder="example@gmail.com"

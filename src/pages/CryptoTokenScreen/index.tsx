@@ -1,17 +1,17 @@
-import { useQuery } from "@apollo/client";
-import React, { useEffect } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, ScrollView, View, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useCallback, useEffect, useState } from "react";
+import { Dimensions, SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
-import BrandButton from "../../components/BrandButton";
 import BrandGradient from "../../components/BrandGradient";
 import CryptoGraph from "../../components/CryptoGraph";
-import { theme } from "../../constants/theme";
 import { getAggregatedTokenQuery, IAggregatedTokenResponse } from "../../graphql/queries/getAggregatedToken";
 import { useTheme } from "../../hooks/useTheme";
 import { IRootReducer } from "../../store/reducers";
 import { getUserOrganization } from "../../store/selectors/user.selectors";
 import CreateTokenSheet from "./components/CreateTokenSheet";
+import { useQuery } from "@apollo/client";
+import AlertsCarousel, { IAlertItem } from "../HomeScreen/components/AlertsCarousel";
+import FireworksSVG from "../SVG/FireworksSVG";
+import CopyText from "../../components/CopyText";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,7 +21,7 @@ const CryptoTokenScreen = ({ navigation } : any) => {
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
 
-    const { data:tokenData, error:tokenError, loading:_tokenLoading } = useQuery<{ getAggregatedToken: IAggregatedTokenResponse }>(getAggregatedTokenQuery(), { 
+    const { data:tokenData, error:_tokenError, loading:_tokenLoading, refetch:refetchToken } = useQuery<{ getAggregatedToken: IAggregatedTokenResponse }>(getAggregatedTokenQuery(), { 
         variables: { input: { organizationId: organization?._id }}
     })
 
@@ -34,21 +34,74 @@ const CryptoTokenScreen = ({ navigation } : any) => {
                 backgroundColor: theme.background,
             }});
     }, [ theme ]);
-    console.log(!!tokenData, tokenData)
+
+    const [ showCreateToken, setShowCreateToken  ] = useState(false);
+
+    const handleShowCreateToken = useCallback(() => {
+        setShowCreateToken(true);
+    }, []);
+
+    useEffect(() => { refetchToken()}, []);
+
+    const [ alertItems, setAlertItems ] = useState<IAlertItem[]>([]);
+
+    const injectItems = useCallback(() => {
+        const newItems:IAlertItem[] = [];
+        if (!tokenData && !_tokenLoading) {
+            newItems.push({
+                title: "Token Doesn't Exist Yet.",
+                description: `Be the one to create the token and start this organization and your journey.`,
+                button: {
+                    callback: () => { setShowCreateToken(true) },
+                    title: `Create ${organization?.symbol}`,
+                },
+                image: () => <FireworksSVG width={width * 0.25} />
+            });
+            setAlertItems(newItems);
+        }
+        setAlertItems(newItems);
+    }, [ tokenData, _tokenLoading ]); 
+
+    useEffect(injectItems, [ injectItems ]);
+
+    const handleSetShow = (e:boolean) => {
+        refetchToken();
+        setShowCreateToken(e);
+    }
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: theme.background }]}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.headerContainer}>
-                    <Text style={[ styles.symbol, { color: theme.text }]}>{ token.symbol } Token</Text>
-                    <Text style={[ styles.name, { color: theme.text }]}>{ token.name }</Text>
-                </View>
+                { 
+                    alertItems.length ? (
+                        <View style={{ marginVertical:15, }}>
+                            <AlertsCarousel items={alertItems}/>
+                        </View>
+                    ) : <></>
+                }
+                { tokenData && (
+                    <View style={styles.headerContainer}>
+                        <Text style={[ styles.symbol, { color: theme.text }]}>{ token.symbol } Token</Text>
+                        <Text style={[ styles.name, { color: theme.text }]}>{ token.name }</Text>
+                    </View>
+                )}
                 <View style={[ styles.graph, { backgroundColor: theme.secondary }]}>
                     <CryptoGraph 
+                        style={{ padding: 20,}}
                         header={"Price"}
                         balance={0.00}
                     />
                 </View>
+                { 
+                    token?.address && (
+                        <View>
+                            <Text style={[ styles.label, { color: theme.text }]}>Contract Address</Text>
+                            <CopyText copyText={token?.address}>
+                                <Text style={[{ color: theme.grey, fontSize: 13.5 }]}>{ token?.address} </Text>
+                            </CopyText>
+                        </View>
+                    )
+                }
             </ScrollView>
             <View style={[ styles.actionsContainer ]}>
                 <View  style={[ styles.actions, { backgroundColor: theme.background }]}>
@@ -62,9 +115,7 @@ const CryptoTokenScreen = ({ navigation } : any) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            { !!tokenError && !tokenData ? 
-                <CreateTokenSheet navigation={navigation} show={true} /> : null
-            }
+            <CreateTokenSheet setShow={handleSetShow} navigation={navigation} show={showCreateToken} />  
         </SafeAreaView>
     )
 }
@@ -99,13 +150,12 @@ const styles = StyleSheet.create({
     },
     actionsContainer: {
         width: width,
-        position: 'absolute',
-        justifyContent: "flex-end", 
-        height: "100%",
+
     },
     scrollView: {
         width: width,
-        minHeight: height,
+        minHeight: height - 165,
+        height: height - 165,
         display: 'flex',
         alignItems: 'center',
     },
@@ -127,6 +177,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems:'center',
         marginHorizontal: 5,
+    },
+    label: {
+        fontWeight: '500',
+        marginLeft: 25,
+        marginTop: 15,
     }
 });
 

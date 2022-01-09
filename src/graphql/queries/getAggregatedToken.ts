@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 export interface IAggregatedTokenResponse {
     symbol: string,
     name: string,
+    address?: string,
 }
 
 export const getAggregatedTokenQuery = () => (
@@ -10,7 +11,8 @@ export const getAggregatedTokenQuery = () => (
         query getAggregatedToken($input: GetAggregatedTokenDTO!) {
             getAggregatedToken(input: $input) {
                 symbol,
-                name
+                name,
+                address
             }
         }
     `

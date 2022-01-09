@@ -1,6 +1,6 @@
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Dimensions, SafeAreaView, ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import BrandContainer from "../../components/BrandContainer";
@@ -8,7 +8,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { IRootReducer } from "../../store/reducers";
 import { getUserOrganization } from "../../store/selectors/user.selectors";
 import LockSVG from "../SVG/LockSVG";
-import AlertsCarousel from "./components/AlertsCarousel";
+import AlertsCarousel, { IAlertItem } from "./components/AlertsCarousel";
 import DeposityETHSheet from "./components/DeposityETHSheet";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { getWalletBalanceQuery } from "../../graphql/queries/getWalletBalance";
@@ -18,6 +18,8 @@ import { Screens } from "../Navigator/enums";
 import { setUserBalance } from "../../store/actions/user.actions";
 import CryptoGraph from "../../components/CryptoGraph";
 import { formatPrice } from "../../utils/formatPrice";
+import WalletAltSVG from "../SVG/WalletAltSVG";
+import GraphSVG from "../SVG/GraphSVG";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -45,6 +47,35 @@ const HomeScreen = ({ navigation } : any) => {
         else return formatPrice(balance);
     }, [ balanceResponse, error ]);
 
+    const [ alertItems, setAlertItems ] = useState<IAlertItem[]>([]);
+
+    const injectItems = useCallback(() => {
+        const newItems:IAlertItem[] = [];
+        if (!walletBalance) {
+            newItems.push({
+                title: "Deposit Ethereum.",
+                description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
+                button: {
+                    callback: () => { navigation.navigate(Screens.Wallet.DEPOSIT_METHODS) },
+                    title: `Explore Methods`,
+                },
+                image: () => <WalletAltSVG width={85} />
+            });
+        }
+        newItems.push({
+            title: "Beginners Guide.",
+            description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
+            button: {
+                callback: () => { navigation.navigate(Screens.Token.INFO) },
+                title: `Buy ${organization?.symbol}`,
+            },
+            image: () => <GraphSVG width={85} />
+        });
+        setAlertItems(newItems);
+    }, [ organization, walletBalance ]); 
+
+    useEffect(injectItems, [ injectItems ]);
+
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
            <ScrollView contentContainerStyle={styles.scrollView}>
@@ -61,7 +92,7 @@ const HomeScreen = ({ navigation } : any) => {
                         <FontAwesomeIcon color={text} icon={faAngleRight} />
                     </View>
                 </TouchableOpacity>
-                <AlertsCarousel navigation={navigation} />
+                <AlertsCarousel items={alertItems} navigation={navigation} />
                 <BrandContainer header="Foreign Portfolio" style={[{ marginTop: 15 }]}>
                    <View style={styles.foreignPortfolioContainer}>
                        <View style={[ styles.lockIconContainer, { marginTop: -50 }]}>
