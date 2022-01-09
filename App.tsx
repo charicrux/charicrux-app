@@ -20,6 +20,7 @@ const ReduxBlocker = () => {
 
 type ApolloClientWrapperProps = { children: ReactChild };
 
+const client = new ApolloClient({ cache: new InMemoryCache() });
 
 const ApolloClientWrapper: React.FC<ApolloClientWrapperProps> = ({ children }) => {
   const state = useSelector((state:IRootReducer) => state);
@@ -32,7 +33,7 @@ const ApolloClientWrapper: React.FC<ApolloClientWrapperProps> = ({ children }) =
     }
   })
 
-  const client = new ApolloClient({ link, cache: new InMemoryCache() });
+  client.setLink(link);
 
   return (
     <ApolloProvider client={client}>
@@ -64,3 +65,5 @@ const styles = StyleSheet.create({
       height: height,
   },
 });
+
+export const apolloClient = client; 

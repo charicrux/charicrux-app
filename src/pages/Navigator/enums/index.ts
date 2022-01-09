@@ -8,8 +8,12 @@ export namespace Screens {
         ORGANIZATIONS = "organizations",
         CREATEORG = 'create-organization'
     }
+    export enum Wallet {
+        DEPOSIT_METHODS = "deposit-methods"
+    }
     export enum Token {
-        CREATE = 'create-token'
+        CREATE = 'create-token',
+        INFO = "token-info"
     }
     export enum TAB_NAVIGATOR {
         INITIAL = "navigator"

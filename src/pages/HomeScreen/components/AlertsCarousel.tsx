@@ -1,12 +1,17 @@
-import React, { ReactElement, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Timeline from "react-native-snap-carousel";
-import { Dimensions, StyleSheet, View, Text } from "react-native";
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "../../../hooks/useTheme";
-import BrandGradientText from "../../../components/BrandGradientText";
-import UserCoin from "../../../components/UserCoin";
 import { useSelector } from "react-redux";
 import { IRootReducer } from "../../../store/reducers";
 import { getUserOrganization } from "../../../store/selectors/user.selectors";
+import GraphSVG from "../../SVG/GraphSVG";
+import WalletAltSVG from "../../SVG/WalletAltSVG";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { Screens } from "../../Navigator/enums";
+import { getWalletBalanceQuery } from "../../../graphql/queries/getWalletBalance";
+import { apolloClient } from "../../../../App";
 
 const { width } = Dimensions.get("screen");
 
@@ -23,7 +28,7 @@ interface IAlertItem {
 type IAlertProps = { item: IAlertItem };
 
 const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, button = {}} }) => {
-    const { theme: { background, secondary, text, grey } } = useTheme();
+    const { theme: { background, secondary, text, grey }, palette: { purple } } = useTheme();
 
     return (
         <View style={[ styles.item, { backgroundColor: secondary }]}>
@@ -32,14 +37,18 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
                 <View style={styles.itemContent}>
                     <Text style={[ styles.title, { color: text }]}>{title}</Text>
                     <Text style={[ styles.description, { color: grey }]}>{description || ""}</Text>
-                    <BrandGradientText text={button?.title || ""}/>
+                    {/* <BrandGradientText text={button?.title || ""}/> */}
+                    <TouchableOpacity onPress={button?.callback} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={[{ color: purple }]}>{ button?.title }</Text>
+                        <FontAwesomeIcon color={purple} icon={faAngleRight} />
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
     )
 }
 
-const AlertsCarousel = () => {
+const AlertsCarousel = ({ navigation } : any) => {
     const carouselClones = useRef(3).current; 
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
@@ -52,36 +61,37 @@ const AlertsCarousel = () => {
         )
     }
 
-    const renderUserCoin = () => {
-        return (
-            <UserCoin />
-        )
-    };
+    const rawBalance = apolloClient.readQuery({ 
+        query: getWalletBalanceQuery(),
+    })
+    const { getWalletBalance:balance } = rawBalance ? rawBalance : {} as any; 
 
     const [ items, setItems ] = useState<IAlertItem[]>([]);
 
     const injectItems = useCallback(() => {
         const newItems:IAlertItem[] = [];
-        newItems.push({
-            title: "Deposit Ethereum.",
-            description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
-            button: {
-                callback: () => {},
-                title: `Explore Methods`,
-            },
-            image: renderUserCoin
-        });
+        if (!balance) {
+            newItems.push({
+                title: "Deposit Ethereum.",
+                description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
+                button: {
+                    callback: () => { navigation.navigate(Screens.Wallet.DEPOSIT_METHODS) },
+                    title: `Explore Methods`,
+                },
+                image: () => <WalletAltSVG width={85} />
+            });
+        }
         newItems.push({
             title: "Beginners Guide.",
             description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
             button: {
-                callback: () => {},
+                callback: () => { navigation.navigate(Screens.Token.INFO) },
                 title: `Buy ${organization?.symbol}`,
             },
-            image: renderUserCoin
+            image: () => <GraphSVG width={85} />
         });
         setItems(newItems);
-    }, [ organization ]); 
+    }, [ organization, balance ]); 
 
     useEffect(injectItems, [ injectItems ]);
 
@@ -109,7 +119,7 @@ const styles = StyleSheet.create({
     },
     item: {
         width: width * 0.9,
-        height: 125,
+        height: 135,
         borderRadius: 5,
         display: 'flex',
         justifyContent: 'center',
@@ -117,7 +127,7 @@ const styles = StyleSheet.create({
     },
     innerItemContainer: {
         width: (width * 0.9) - 5,
-        height: 120,
+        height: 130,
         borderWidth: 3,
         borderRadius: 5,
         padding: 10,
@@ -125,6 +135,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems: 'center',
         overflow: "hidden",
+        paddingLeft: 15,
     },
     title: {
         fontWeight: "600",
@@ -135,7 +146,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     itemContent: {
-        marginLeft: 10,
+        marginLeft: 15,
         display: 'flex',
         justifyContent: 'center',
         paddingRight: 100,

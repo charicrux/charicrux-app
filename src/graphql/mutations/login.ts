@@ -10,7 +10,8 @@ export const loginClientMutation = gql`
             loginUser(input: $input) {
                 email,
                 accessToken,
-                organization { symbol, name },
+                wallet { _id, address },
+                organization { symbol, name, _id },
             }
         }
     `
