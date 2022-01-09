@@ -5,7 +5,8 @@ export namespace Screens {
     export enum Account {
         CREATE = "create-account",
         LOGIN = "LOGIN",
-        ORGANIZATIONS = "organizations"
+        ORGANIZATIONS = "organizations",
+        CREATEORG = 'create-organization'
     }
     export enum Token {
         CREATE = 'create-token'
