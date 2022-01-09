@@ -12,6 +12,7 @@ import OrganizationScreen from "../OrganizationsScreen";
 import CreateOrganizationScreen from "../CreateOrganizationScreen";
 import DepositMethodsScreen from "../DepositMethodsScreen";
 import CryptoTokenScreen from "../CryptoTokenScreen";
+import ProfileScreen from "../ProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -92,6 +93,14 @@ const Navigator = () => {
                             headerShown: true,
                             headerBackTitleVisible: false,
                             headerTitle: "",
+                        }}
+                />
+                <Stack.Screen
+                        name={Screens.Account.VIEW}
+                        component={ProfileScreen}
+                        options={{
+                            headerShown: false,
+                            gestureEnabled: true,
                         }}
                 />
             </Stack.Navigator>

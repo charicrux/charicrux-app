@@ -33,6 +33,7 @@ const LaunchScreen = ({ navigation } : any) => {
             <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
             <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
                 <Text style={[ styles.notice ]}>
+                    <Text onPress={() => {navigation.navigate(Screens.TAB_NAVIGATOR.INITIAL)}}>gmaieing????</Text>
                     By continuing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
                 </Text>
             </View>
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
         transform: [{ translateY: -width * 0.15 }, { translateX: -width * 0.1 * 0.5 }]
     },
     header: {
-        marginVertical: 25 + (height * 0.05),
+        marginVertical: Platform.OS === 'ios' ? 25 + (height * 0.05) : height * 0.05,
         fontWeight: "400",
         fontSize: 25,
     },
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     notice: {
         textAlign: 'center',
         color: "#797979",
-        marginBottom: 15,
+        marginVertical: 15,
         width: width * 0.8,
     }
 });

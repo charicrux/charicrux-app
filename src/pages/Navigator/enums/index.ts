@@ -6,7 +6,8 @@ export namespace Screens {
         CREATE = "create-account",
         LOGIN = "LOGIN",
         ORGANIZATIONS = "organizations",
-        CREATEORG = 'create-organization'
+        CREATEORG = 'create-organization',
+        VIEW = 'view',
     }
     export enum Wallet {
         DEPOSIT_METHODS = "deposit-methods"

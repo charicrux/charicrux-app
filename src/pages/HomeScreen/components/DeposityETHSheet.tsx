@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import BottomSheet from "reanimated-bottom-sheet";
 import BrandButton from "../../../components/BrandButton";
@@ -14,6 +14,7 @@ const { width, height } = Dimensions.get("screen");
 const DeposityETHSheet = ({ navigation } : any) => {
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height - 200).current;
+    const sheetHeightAndroid = useRef<number>(height - 100).current;
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
 
@@ -33,9 +34,9 @@ const DeposityETHSheet = ({ navigation } : any) => {
 
     const renderMPSelector = () => {
         return (
-            <View style={[styles.container, { backgroundColor: background, height: sheetHeight - 25, marginTop: 15 }]}>
+            <View style={[styles.container, { backgroundColor: background, height: Platform.OS === 'ios' ? sheetHeight - 25 : sheetHeightAndroid - 125, marginTop: 15 }]}>
                 <Text style={[ styles.header, { color: text }]}>Deposit Ethereum.</Text>
-                <PiggyBankSVG width={width * 0.8} />
+                <PiggyBankSVG width={Platform.OS === 'ios' ? width * 0.8 : width * 0.5} />
                 <Text style={[ styles.text, { color: text }]}>Let's Deposit Some Ether to Buy Some { organization?.symbol }!</Text>
                 <View style={styles.nextContainer}>
                     <BrandButton onPress={handleDepositMethods} type="gradient" title="Explore Deposit Methods"/>
@@ -52,7 +53,7 @@ const DeposityETHSheet = ({ navigation } : any) => {
         <BottomSheet 
             ref={sheetRef}
             initialSnap={1}
-            snapPoints={[sheetHeight, 0]} 
+            snapPoints={Platform.OS === 'ios' ? [sheetHeight, 0] : [sheetHeightAndroid, 0]} 
             borderRadius={25}
             renderContent={renderMPSelector}
             onCloseEnd={handleSelectorBack}

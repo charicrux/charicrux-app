@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useTheme } from "../../hooks/useTheme";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faHome, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { Screens } from "../Navigator/enums";
 
 type TabIconProps = {
     focused: boolean,
@@ -34,6 +35,10 @@ const TabIcon : React.FC<TabIconProps> = ({ focused, iconSize, icon, ...props })
 export const TabNavigator = ({ navigation, ...props } : any) => {
     const { theme } = useTheme();
     const Tabs = createBottomTabNavigator();
+
+    const handleAccount = () => {
+        navigation.navigate(Screens.Account.VIEW);
+    }
 
     return (
         <>
@@ -78,7 +83,7 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                     />
                     <Tabs.Screen 
                         name={TabNavigatorScreens.ACCOUNT} 
-                        children={() => <HomeScreen navigation={navigation} { ...props } />}
+                        children={() => <HomeScreen navigation={navigation} { ...props } onPress={handleAccount}/>}
                     />
             </Tabs.Navigator>
         </>
