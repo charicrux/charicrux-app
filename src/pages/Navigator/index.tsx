@@ -9,6 +9,7 @@ import CreateTokenScreen from "../CreateTokenScreen";
 import { Screens } from "./enums";
 import TabNavigator from "../TabNavigator";
 import OrganizationScreen from "../OrganizationsScreen";
+import CreateOrganizationScreen from "../CreateOrganizationScreen";
 import DepositMethodsScreen from "../DepositMethodsScreen";
 import CryptoTokenScreen from "../CryptoTokenScreen";
 
@@ -66,6 +67,14 @@ const Navigator = () => {
                             gestureEnabled: false,
                         }}
                 />
+                <Stack.Screen
+                        name={Screens.Account.CREATEORG}
+                        component={CreateOrganizationScreen}
+                        options={{
+                            headerShown: false,
+                            gestureEnabled: true,
+                        }}
+                />
                  <Stack.Screen 
                         name={Screens.Wallet.DEPOSIT_METHODS}
                         component={DepositMethodsScreen}
@@ -83,7 +92,6 @@ const Navigator = () => {
                             headerShown: true,
                             headerBackTitleVisible: false,
                             headerTitle: "",
-                            gestureEnabled: true,
                         }}
                 />
             </Stack.Navigator>

@@ -27,6 +27,10 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
         navigation.navigate(Screens.Account.CREATE, { ...organization });
     };
 
+    const handleCreateOrganization = () => {
+        navigation.navigate(Screens.Account.CREATEORG);
+    };
+
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
             <BuildingsSVG width={width * 0.5} />
@@ -52,7 +56,7 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
             </View>
             <View style={{ marginTop: 25 }}>
                 <TouchableOpacity>
-                    <Text style={[ styles.notice, { color: grey }]}>
+                    <Text style={[ styles.notice, { color: grey }]} onPress={handleCreateOrganization}>
                         Don't See your Organization?
                     </Text>
                 </TouchableOpacity>
