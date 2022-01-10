@@ -15,7 +15,7 @@ import {
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
-import { createTokenMutation, ICreateTokenDTO } from '../../graphql/mutations/createToken';
+import { createTokenMutation } from '../../graphql/mutations/createToken';
 import { useTheme } from '../../hooks/useTheme';
 import { Screens } from '../Navigator/enums';
 import EtherGradientTokenSVG from '../SVG/EtherGradientTokenSVG';
