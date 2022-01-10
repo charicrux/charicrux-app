@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions, StyleProp, ViewStyle } from "react-native";
+import Dash from "react-native-dash";
+import { useSelector } from "react-redux";
 import { useTheme } from "../../hooks/useTheme";
+import { IRootReducer } from "../../store/reducers";
+import { getAccessToken } from "../../store/selectors/auth.selectors";
 import { formatPrice } from "../../utils/formatPrice";
 import TimespanNavbar from "./components/TimespanNavbar";
 
@@ -9,6 +13,8 @@ interface CryptoGraphProps {
     header?: string,
     style?: StyleProp<ViewStyle>,
 }
+
+const { width } = Dimensions.get("window");
 
 const CryptoGraph : React.FC<CryptoGraphProps> = ({ balance, header, style }) => {
 
@@ -20,6 +26,15 @@ const CryptoGraph : React.FC<CryptoGraphProps> = ({ balance, header, style }) =>
             <View>
                 <Text style={[ styles.header, { color: theme.text }]}>{ header || "Value" }</Text>
                 <Text style={[ styles.balanceHeader, { color: theme.text }]}>${ balanceFormatted }</Text>
+            </View>
+            <View style={styles.dashContainer}>
+                <Dash 
+                    style={{width: width * 0.8, height:1}} 
+                    dashGap={5} 
+                    dashLength={5}
+                    dashThickness={1} 
+                    dashColor={theme.text}
+                />
             </View>
             <TimespanNavbar />
         </View>
@@ -43,7 +58,12 @@ const styles = StyleSheet.create({
     balanceHeader: {
         fontWeight: '600',
         fontSize: 25,
-    }   
+    },
+    dashContainer: {
+        flex: 3,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    }
 });
 
 export default CryptoGraph;

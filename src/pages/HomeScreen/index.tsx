@@ -66,7 +66,7 @@ const HomeScreen = ({ navigation } : any) => {
             title: "Beginners Guide.",
             description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
             button: {
-                callback: () => { navigation.navigate(Screens.Token.INFO) },
+                callback: () => { navigation.navigate(Screens.Token.INFO, { organization }) },
                 title: `Buy ${organization?.symbol}`,
             },
             image: () => <GraphSVG width={85} />

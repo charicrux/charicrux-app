@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform  } from 'react-native';
 import BrandButton from '../../components/BrandButton';
 import BrandGradient from '../../components/BrandGradient';
+import FadeIn from '../../components/FadeIn';
 import { useTheme } from '../../hooks/useTheme';
 import { Screens } from '../Navigator/enums';
 import EtherIconSVG from '../SVG/EtherIconSVG';
@@ -11,6 +12,9 @@ const { width, height } = Dimensions.get("screen");
 
 const LaunchScreen = ({ navigation } : any) => {
     const { theme: { background, text } } = useTheme();
+    const [ mounted, setMounted ] = useState(false);
+
+    useEffect(() => { setMounted(true )}, []);
 
     const handleCreateAccount = () => {
         navigation.navigate(Screens.Account.ORGANIZATIONS);
@@ -21,21 +25,25 @@ const LaunchScreen = ({ navigation } : any) => {
     }
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
-            <View style={styles.etherLogo}>
-                <BrandGradient style={styles.etherCircle} />
-                <Animated.View style={styles.etherContainer}>
-                    <EtherIconSVG width={width * 0.7}/>
-                </Animated.View>
-            </View>
-            <Text style={[ styles.header, { color: text } ]}>Begin Crypto Fundraising</Text>
-            <BrandButton onPress={handleCreateAccount} type="gradient" title="Create an Account" />
-            <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
-            <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
-                <Text style={[ styles.notice ]}>
-                    By continuing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
-                </Text>
-            </View>
+        <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
+            <FadeIn show={mounted} style={[styles.innerContainer ]}>
+                <>
+                <View style={styles.etherLogo}>
+                    <BrandGradient style={styles.etherCircle} />
+                    <Animated.View style={styles.etherContainer}>
+                        <EtherIconSVG width={width * 0.7}/>
+                    </Animated.View>
+                </View>
+                <Text style={[ styles.header, { color: text } ]}>Begin Crypto Fundraising</Text>
+                <BrandButton onPress={handleCreateAccount} type="gradient" title="Create an Account" />
+                <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
+                <View style={ styles.footer}>
+                    <Text style={[ styles.notice ]}>
+                        By continuing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
+                    </Text>
+                </View>
+                </>
+            </FadeIn>
         </SafeAreaView>
     )
 }
@@ -43,7 +51,13 @@ const LaunchScreen = ({ navigation } : any) => {
 const styles = StyleSheet.create({
     container: {
         width,
-        height,
+        minHeight: height,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    innerContainer: {
+        width,
+        minHeight: height - 75,
         display: 'flex',
         alignItems: 'center',
     },
@@ -78,6 +92,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems:'center',
+    },
+    footer: {
+        flex: 1,
+        justifyContent: "flex-end",
     },
     notice: {
         textAlign: 'center',

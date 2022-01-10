@@ -1,23 +1,30 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { ReactChild } from "react";
-import { TouchableOpacity, Clipboard, ScrollView, View, StyleSheet, Dimensions } from "react-native";
+import { TouchableOpacity, Clipboard, ScrollView, View, StyleSheet, Dimensions, StyleProp, ViewStyle } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
+import * as Haptics from "expo-haptics";
 
 interface CopyTextProps {
     children: ReactChild,
-    copyText: any
+    copyText: any,
+    style?: StyleProp<ViewStyle>,
 }
 
 const { width, height } = Dimensions.get("window");
 
-const CopyText : React.FC<CopyTextProps> = ({ children, copyText }) => {
+const CopyText : React.FC<CopyTextProps> = ({ children, copyText, style }) => {
     const { theme } = useTheme();
+
+    const handleCopy = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);  
+        Clipboard.setString(copyText || "")
+    };
     
     return (
         <TouchableOpacity 
-            onPress={() => { Clipboard.setString(copyText || "") }}
-            style={[styles.container, { backgroundColor: theme.secondary }]}>
+            onPress={handleCopy}
+            style={[styles.container, { backgroundColor: theme.secondary }, style]}>
             <ScrollView 
                 horizontal={true} 
                 showsHorizontalScrollIndicator={false}

@@ -8,22 +8,33 @@ import { useTheme } from "../../hooks/useTheme";
 import { IRootReducer } from "../../store/reducers";
 import { getUserOrganization } from "../../store/selectors/user.selectors";
 import CreateTokenSheet from "./components/CreateTokenSheet";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import AlertsCarousel, { IAlertItem } from "../HomeScreen/components/AlertsCarousel";
 import FireworksSVG from "../SVG/FireworksSVG";
 import CopyText from "../../components/CopyText";
 
 const { width, height } = Dimensions.get("window");
 
-const CryptoTokenScreen = ({ navigation } : any) => {
+const CryptoTokenScreen = ({ navigation, route } : any) => {
     const { theme } = useTheme();
+
+
+    const [ currentOrganizationId, setCurrentOrganizationId ] = useState<string | null>(null);
 
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
 
-    const { data:tokenData, error:_tokenError, loading:_tokenLoading, refetch:refetchToken } = useQuery<{ getAggregatedToken: IAggregatedTokenResponse }>(getAggregatedTokenQuery(), { 
-        variables: { input: { organizationId: organization?._id }}
+    const [ loadOrganization, { data:tokenData, error:_tokenError, loading:_tokenLoading, refetch:refetchToken }] = useLazyQuery<{ getAggregatedToken: IAggregatedTokenResponse }>(getAggregatedTokenQuery(), { 
+        variables: { input: { organizationId: currentOrganizationId }}
     })
+
+    useEffect(() => {
+        if (currentOrganizationId) loadOrganization();
+    }, [ currentOrganizationId ]);
+
+    useEffect(() => {
+        if (route?.params?.organization) setCurrentOrganizationId(route?.params?.organization?._id);
+    }, [ route ]);
 
     const token:IAggregatedTokenResponse = tokenData ? tokenData.getAggregatedToken : {} as any;
 
@@ -33,7 +44,7 @@ const CryptoTokenScreen = ({ navigation } : any) => {
             headerStyle: { 
                 backgroundColor: theme.background,
             }});
-    }, [ theme ]);
+    }, [ theme, navigation ]);
 
     const [ showCreateToken, setShowCreateToken  ] = useState(false);
 
