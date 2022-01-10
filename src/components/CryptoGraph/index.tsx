@@ -11,7 +11,6 @@ interface CryptoGraphProps {
 }
 
 const CryptoGraph : React.FC<CryptoGraphProps> = ({ balance, header, style }) => {
-
     const balanceFormatted = useMemo(() => formatPrice(balance), [ balance ]);
     const { theme } = useTheme();
 
@@ -19,12 +18,14 @@ const CryptoGraph : React.FC<CryptoGraphProps> = ({ balance, header, style }) =>
         <View style={[styles.container, style ]}>
             <View>
                 <Text style={[ styles.header, { color: theme.text }]}>{ header || "Value" }</Text>
-                <Text style={[ styles.balanceHeader, { color: theme.text }]}>${ balanceFormatted }</Text>
+                <Text style={[ styles.balanceHeader, { color: theme.text }]}>${balanceFormatted}</Text>
             </View>
             <TimespanNavbar />
         </View>
     )
 }
+    
+
 
 const styles = StyleSheet.create({
     container: {

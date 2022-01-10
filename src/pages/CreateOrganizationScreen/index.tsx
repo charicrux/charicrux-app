@@ -19,9 +19,10 @@ const CreateOrganizationScreen = ({navigation}: any) => {
     return(
        
             <SafeAreaView style={styles.container}>
-                 <KeyboardAvoidingView behavior='position'>
-                    <ScrollView contentContainerStyle={styles.scrollView}>
+                <ScrollView contentContainerStyle={styles.scrollView}>
+                    <KeyboardAvoidingView behavior='position'>
                         <View style={styles.container}>
+                            <View style={{height: height * 0.03}}></View>
                             <LightbulbSVG width={width * 0.25}/>
                             <Text style={styles.header}>Organization Request Form</Text>
                             <Text style={styles.sub}>Fill Out the Form and We Will Get Back to you ASAP.</Text>
@@ -45,10 +46,9 @@ const CreateOrganizationScreen = ({navigation}: any) => {
                                 </View>
                                 <BrandButton onPress={handleSubmit} type='gradient' title="Submit" style={{marginVertical: 25}}/>
                             </View>
-                            
                         </View>
-                    </ScrollView>
-                 </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
             </SafeAreaView>
     )
 }
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     scrollView: {
         display: 'flex',
         alignItems: 'center',
+        height: Platform.OS === 'ios' ? height: height * 1.2,
     },
     header: {
         color: '#fff',

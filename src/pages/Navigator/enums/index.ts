@@ -19,4 +19,7 @@ export namespace Screens {
     export enum TAB_NAVIGATOR {
         INITIAL = "navigator"
     }
+    export enum Fundraiser {
+        CREATE = 'create-fundraiser',
+    }
 }
