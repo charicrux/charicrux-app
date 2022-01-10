@@ -8,6 +8,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faHome, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { Screens } from "../Navigator/enums";
+import ProfileScreen from "../ProfileScreen";
 
 type TabIconProps = {
     focused: boolean,
@@ -83,7 +84,7 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                     />
                     <Tabs.Screen 
                         name={TabNavigatorScreens.ACCOUNT} 
-                        children={() => <HomeScreen navigation={navigation} { ...props } onPress={handleAccount}/>}
+                        children={() => <ProfileScreen navigation={navigation} { ...props } />}
                     />
             </Tabs.Navigator>
         </>
