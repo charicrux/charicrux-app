@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import { useMutation } from '@apollo/client';
+import React, { useMemo, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform, ScrollView  } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import BrandButton from '../../components/BrandButton';
 import BrandContainer from '../../components/BrandContainer';
 import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
+import { createFundraiserMutation, ICreateFundraiserDTO } from '../../graphql/mutations/createFundraiser';
 import { ILoginDTO, loginClientMutation } from '../../graphql/mutations/login';
 import { getWalletBalanceQuery } from '../../graphql/queries/getWalletBalance';
 import { useTheme } from '../../hooks/useTheme';
@@ -16,6 +18,18 @@ const { width, height } = Dimensions.get('screen');
 const CreateFundraiserScreen = ({navigation}: any) => {
     const { theme: { background, text, grey, secondary } } = useTheme();
 
+    const [formData, setFormData] = useState<ICreateFundraiserDTO>({});
+
+    const [createFundraiser, {data: _data, loading: _loading, error: _error}] = useMutation<unknown, {input: ICreateFundraiserDTO}>(createFundraiserMutation(), {
+        variables: { input: {...formData}}
+    });
+
+    const updateFormData = (key:keyof ICreateFundraiserDTO) => (e:string) => {
+        const raised: number = 0;
+        setFormData({ ...formData, [ key]: e });
+        setFormData({raised, [key]: 'raised'})
+    };
+
     return(
         <SafeAreaView style={[styles.container, {backgroundColor: secondary}]}>
             <View style={[ styles.containerms, { backgroundColor: background }]}>
@@ -23,8 +37,8 @@ const CreateFundraiserScreen = ({navigation}: any) => {
                 <Text style={[styles.header, { color: text }]}>Create Fundraiser</Text>
             </View>
             <DollarGraphSVG width={width * 0.6}/>
-            <BrandTextInput placeholder="Name of Fundraiser"/>
-            <BrandTextInput style={{marginTop: 15}} placeholder="Goal in Dollars"/>
+            <BrandTextInput placeholder="Name of Fundraiser" onChangeText={updateFormData('name')}/>
+            <BrandTextInput style={{marginTop: 15}} placeholder="Goal in Dollars" onChangeText={updateFormData('goal')}/>
             <BrandButton style={{marginVertical: 50}} type='gradient' title='Create Fundraiser'/>
         </View>     
         </SafeAreaView>
