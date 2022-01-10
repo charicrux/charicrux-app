@@ -64,7 +64,7 @@ const ProfileScreen = ({navigation}: any) => {
                 <TouchableOpacity>
                     <View style={styles.rect}>
                         <Text style={styles.field}>Organization:</Text>
-                        
+                        <Text></Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
