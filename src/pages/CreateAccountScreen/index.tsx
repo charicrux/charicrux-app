@@ -91,7 +91,7 @@ const CreateAccountScreen = ({ route, navigation} : any) => {
                         secureTextEntry={true}
                         placeholder="Password"
                     />
-                    <BrandButton onPress={handleCreateAccount} style={{ marginTop: 25}} type="gradient" title="Mint Wallet" />
+                    <BrandButton onPress={handleCreateAccount} style={{ marginTop: 25 }} type="gradient" title="Mint Wallet" />
                     <View style={styles.orContainer}>
                         <View style={[styles.horizontalLineLeft]}/>
                         <Text style={[styles.or]}>Or</Text>
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 30,
+        marginTop: 50,
         justifyContent: "space-around"
     },
     or: {

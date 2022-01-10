@@ -1,21 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import Timeline from "react-native-snap-carousel";
 import { Dimensions, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "../../../hooks/useTheme";
-import { useSelector } from "react-redux";
-import { IRootReducer } from "../../../store/reducers";
-import { getUserOrganization } from "../../../store/selectors/user.selectors";
-import GraphSVG from "../../SVG/GraphSVG";
-import WalletAltSVG from "../../SVG/WalletAltSVG";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { Screens } from "../../Navigator/enums";
-import { getWalletBalanceQuery } from "../../../graphql/queries/getWalletBalance";
-import { apolloClient } from "../../../../App";
 
 const { width } = Dimensions.get("screen");
 
-interface IAlertItem {
+export interface IAlertItem {
     title: string,
     description?: string,
     button?: {
@@ -48,10 +40,13 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
     )
 }
 
-const AlertsCarousel = ({ navigation } : any) => {
+interface AlertsCarouselProps {
+    navigation?: any,
+    items: IAlertItem[],
+}
+
+const AlertsCarousel : React.FC<AlertsCarouselProps> = ({ navigation, items } : any) => {
     const carouselClones = useRef(3).current; 
-    const state = useSelector((state:IRootReducer) => state);
-    const organization = getUserOrganization(state);
 
     const renderWeekTimeline = ({ item }: { item: IAlertItem }) => {
         return (
@@ -60,40 +55,6 @@ const AlertsCarousel = ({ navigation } : any) => {
             </View>
         )
     }
-
-    const rawBalance = apolloClient.readQuery({ 
-        query: getWalletBalanceQuery(),
-    })
-    const { getWalletBalance:balance } = rawBalance ? rawBalance : {} as any; 
-
-    const [ items, setItems ] = useState<IAlertItem[]>([]);
-
-    const injectItems = useCallback(() => {
-        const newItems:IAlertItem[] = [];
-        if (!balance) {
-            newItems.push({
-                title: "Deposit Ethereum.",
-                description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
-                button: {
-                    callback: () => { navigation.navigate(Screens.Wallet.DEPOSIT_METHODS) },
-                    title: `Explore Methods`,
-                },
-                image: () => <WalletAltSVG width={85} />
-            });
-        }
-        newItems.push({
-            title: "Beginners Guide.",
-            description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
-            button: {
-                callback: () => { navigation.navigate(Screens.Token.INFO) },
-                title: `Buy ${organization?.symbol}`,
-            },
-            image: () => <GraphSVG width={85} />
-        });
-        setItems(newItems);
-    }, [ organization, balance ]); 
-
-    useEffect(injectItems, [ injectItems ]);
 
     return (
         <View style={styles.container}>

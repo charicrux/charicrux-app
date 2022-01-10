@@ -14,6 +14,8 @@ const BrandTextInput : React.FC<BrandTextInputProps> = ({ style, ...props }) => 
     return (
         <View>
             <TextInput 
+                autoCapitalize='none'
+                autoCorrect={false}
                 placeholderTextColor={"#797979"}
                 style={[ styles.input, { backgroundColor: secondary }, style ]}
                 { ...props }
