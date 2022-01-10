@@ -3,27 +3,33 @@ import { stubFalse } from 'lodash';
 import React, { useMemo } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform, ScrollView  } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 import BrandButton from '../../components/BrandButton';
 import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
 import { ILoginDTO, loginClientMutation } from '../../graphql/mutations/login';
 import { getWalletBalanceQuery } from '../../graphql/queries/getWalletBalance';
 import { useTheme } from '../../hooks/useTheme';
+import { setAccessToken } from '../../store/actions/auth.actions';
+import { IRootReducer } from '../../store/reducers';
+import { getUser, getUserOrganization, getUserWallet } from '../../store/selectors/user.selectors';
 import { Screens } from '../Navigator/enums';
 import AvatarSVG from '../SVG/AvatarSVG';
+import InfoSVG from '../SVG/InfoSVG';
 
 const { width, height } = Dimensions.get('screen');
 
 const ProfileScreen = ({navigation}: any) => {
-    const { theme: { background, text } } = useTheme();
+    const { theme: { background, text, grey } } = useTheme();
 
     const handleDeposit = () => {
         navigation.navigate(Screens.Wallet.DEPOSIT_METHODS)
     }
 
-    const [loginUser, { data:_data, loading:_loading, error:_error }] = useMutation<unknown, { input: ILoginDTO }>(loginClientMutation, {});
-
-    
+    const state = useSelector((state:IRootReducer) => state);
+    const user = getUser(state);
+    const organization = getUserOrganization(state);
+    const wallet = getUserWallet(state);
 
     const { data:balanceResponse, refetch, error } = useQuery(getWalletBalanceQuery());
 
@@ -38,65 +44,86 @@ const ProfileScreen = ({navigation}: any) => {
         }); 
     }, [ balanceResponse, error ]);
 
-    const email = (() => {
-        loginUser().then(({data}: any) => {
-            return data.email;
-        }).catch((_: any) => {console.log(_)});
-    });
+    const handleLogOut = () => {
+        setAccessToken("");
+        navigation.navigate(Screens.Initial.LAUNCH);
+    };
 
     return(
-        <ScrollView>
-            <SafeAreaView style={styles.container}>
-                <View style={{marginBottom: 50}}></View>
-                <AvatarSVG width={width*0.6} />
-                <Text style={styles.header}>Your Account</Text>
+        <SafeAreaView style={styles.container} >
+            <ScrollView contentContainerStyle={styles.scrollView}>
+             <View style={{marginVertical: 25 }}>
+                <InfoSVG width={width} height={width * 0.4}/>
+             </View>
+                <Text style={styles.header}>Account</Text>
                 <TouchableOpacity onPress={handleDeposit}>
                     <View style={styles.rect}>
-                        <Text style={styles.field}>Ether Deposited:</Text>
-                        <Text style={styles.money}>
+                        <Text style={styles.field}>Buying Power</Text>
+                        <Text style={[ styles.notmoney, { color: grey }]}>
                                 { walletBalance ?? "N/A" }
                         </Text>
                     </View>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={handleDeposit}>
+                    <View style={styles.rect}>
+                        <Text style={styles.field}>Wallet Address</Text>
+                        <Text numberOfLines={1} style={[styles.notmoney, { color: grey}]}>
+                                { wallet?.address ?? "N/A" }
+                        </Text>
+                    </View>
+                </TouchableOpacity>
                 <View style={{alignItems: 'flex-start', width: width * 0.85}}>
-                    <Text style={{color: '#fff', marginTop: 50, marginBottom: 5, fontSize: 15}}>User Info</Text>
+                    <Text style={{color: '#fff', marginTop: 50, marginBottom: 5, fontSize: 15}}>User Details</Text>
                 </View>
                 <TouchableOpacity>
                     <View style={styles.rect}>
                         <Text style={styles.field}>Organization:</Text>
-                        <Text></Text>
+                        <Text numberOfLines={1} style={[styles.notmoney, { color: grey }]}>{organization?.name ?? "N/A"}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <View style={styles.rect}>
                         <Text style={styles.field}>Email:</Text>
-                        <Text style={styles.notmoney}>{email ?? "N/A"}</Text>
+                        <Text  numberOfLines={1}  style={[styles.notmoney, { color: grey }]}>{user?.email ?? "N/A"}</Text>
                     </View>
                 </TouchableOpacity>
-            </SafeAreaView>
-        </ScrollView>
+                <BrandButton style={styles.logOut} onPress={handleLogOut} type='gradient' title='Log Out'/>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         width,
-        height: height * 1.1,
+        height: height,
         display: 'flex',
         alignItems: 'center',
         backgroundColor: '#16152F',
     },
+    scrollView: {
+        width: width,
+        height: height,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    logOut: {
+        marginTop: 25,
+    },
     header: {
         color: "#fff",
         fontSize: 25,
-        marginBottom: 50,
+        marginBottom: 25,
+        marginTop: 25,
+        fontWeight: "600",
     },
     rect: {
         flexDirection: 'row',
         width: width * 0.9,
-        height: height * 0.05,
+        height: height * 0.07,
+        minHeight: 35,
         backgroundColor: '#202143',
-        borderRadius: 10,
+        borderRadius: 5,
         justifyContent: 'space-between',   
         alignItems: 'center',
         marginBottom: 5,
@@ -106,19 +133,16 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginLeft: 15,
         alignItems: 'flex-start',
-        width: '40%',
     },
     money: {
         fontSize: 15,
         marginRight: 15,
-        color: '#26FFB1',
-        width: '10%',
     },
     notmoney: {
         fontSize: 15,
         marginRight: 15,
         color: '#fff',
-        width: '10%',
+        maxWidth: "55%",
     }
 });
 
