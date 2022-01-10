@@ -65,7 +65,7 @@ const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ show, setShow }) =
 
     const renderMPSelector = () => {
         return (
-            <View style={[styles.container, { backgroundColor: background, height: sheetHeight - 125, marginTop: 35 }]}>
+            <View style={[styles.container, { backgroundColor: background, height: sheetHeight -125, marginTop: 35 }]}>
                {/* <EtherGradientTokenSVG width={width*0.7}/> */}
                <FactorySVG width={width * 0.7}/>
                 <Text style={styles.header}>Deploy { organization?.symbol } Token</Text>
