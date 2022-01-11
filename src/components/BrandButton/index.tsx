@@ -24,7 +24,7 @@ type BrandButtonProps = {
     style?: StyleProp<ViewStyle>,
 } & TouchableOpacityProps;
 
-const BrandButton : React.FC<BrandButtonProps> = ({ type = "default", title, style, loading = false, containerStyle, ...props }) => {
+const BrandButton : React.FC<BrandButtonProps> = ({ type = "default", title, style, loading = false, disabled, containerStyle, ...props }) => {
     const { theme: { text, secondary } } = useTheme();
 
     const opacityVal = useRef(new Animated.Value(1)).current;
@@ -33,17 +33,17 @@ const BrandButton : React.FC<BrandButtonProps> = ({ type = "default", title, sty
         Animated.timing(
             opacityVal, {
                 duration: 350,
-                toValue: loading ? 0.25 : 1,
+                toValue: loading || disabled ? 0.25 : 1,
                 useNativeDriver: true,
             }
         ).start();
-    }, [ loading ]);
+    }, [ loading, disabled ]);
 
     return (
         <TouchableOpacity 
             { ...props }
             style={[ styles.container, containerStyle ]}
-            disabled={loading}
+            disabled={disabled || loading}
         >
             <View style={styles.loaderContainer}>
                 <ActivityIndicator animating={loading} style={styles.loader} />

@@ -1,5 +1,7 @@
 
 export enum TabNavigatorScreens {
     HOME = "home",
-    ACCOUNT = "account"
+    SEARCH_TOKENS = "search-tokens",
+    ACCOUNT = "account",
+    CREATE_FUNDRAISER = "create-fundraiser"
 }

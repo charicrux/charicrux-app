@@ -19,7 +19,7 @@ const DepositMethodsSheet : React.FC<DepositMethodsSheetProps> = ({ show, setSho
 
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height * 0.5).current;
-    const { theme: { background, text, grey  }, palette: { purple }} = useTheme();
+    const { theme: { background, text, grey  }, palette: { purple, red }} = useTheme();
 
     const state = useSelector((state:IRootReducer) => state);
     const wallet = getUserWallet(state);
@@ -48,6 +48,7 @@ const DepositMethodsSheet : React.FC<DepositMethodsSheetProps> = ({ show, setSho
                     <CopyText copyText={wallet?.address}>
                         <Text style={[{ color: grey, fontSize: 15 }]}>{ wallet?.address }</Text>
                     </CopyText>
+                    <Text style={[{ color: red, textAlign: 'center', marginTop: 5 }]}>Deposit Using Robsten Ethereum Only.</Text>
                     <View style={styles.moreContainer}>
                         <Text style={[{ color: grey }]}>Additional Methods Coming Soon!</Text>
                     </View>

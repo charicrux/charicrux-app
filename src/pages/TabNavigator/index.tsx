@@ -6,9 +6,10 @@ import HomeScreen from "../HomeScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useTheme } from "../../hooks/useTheme";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faHome, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { faHandHoldingUsd, faHome, faSearch, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { Screens } from "../Navigator/enums";
 import ProfileScreen from "../ProfileScreen";
+import FundraisersScreen from "../FundraisersScreen";
 
 type TabIconProps = {
     focused: boolean,
@@ -54,6 +55,12 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                             case TabNavigatorScreens.ACCOUNT: {
                                 return <TabIcon icon={faUserAlt} focused={focused} />;
                             }
+                            case TabNavigatorScreens.SEARCH_TOKENS: {
+                                return <TabIcon icon={faSearch} focused={focused} />
+                            }
+                            case TabNavigatorScreens.CREATE_FUNDRAISER: {
+                                return <TabIcon iconSize={30} icon={faHandHoldingUsd} focused={focused} />
+                            }
                             default: {
                                 return; 
                             }
@@ -81,6 +88,14 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                     <Tabs.Screen 
                         name={TabNavigatorScreens.HOME} 
                         children={() => <HomeScreen navigation={navigation} { ...props } />}
+                    />
+                     {/* <Tabs.Screen 
+                        name={TabNavigatorScreens.SEARCH_TOKENS} 
+                        children={() => <SearchTokensScreen navigation={navigation} { ...props } />}
+                    /> */}
+                    <Tabs.Screen 
+                        name={TabNavigatorScreens.CREATE_FUNDRAISER} 
+                        children={() => <FundraisersScreen navigation={navigation} { ...props } />}
                     />
                     <Tabs.Screen 
                         name={TabNavigatorScreens.ACCOUNT} 
