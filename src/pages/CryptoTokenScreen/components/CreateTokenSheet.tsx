@@ -28,7 +28,7 @@ const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ show, setShow }) =
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
 
-    const { theme: { background, grey }, palette: { purple }} = useTheme();
+    const { theme: { background, grey }, palette: { purple, red }} = useTheme();
 
     const { data:{ getGasEstimate } = {}} = useQuery<{ getGasEstimate: IGasEstimateResponse }>(getGasEstimateQuery(), { 
         variables: { input: { maxGasUnits: 1000000 }},
@@ -53,15 +53,23 @@ const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ show, setShow }) =
     }, [ show ]);
 
     const handleDeployToken = () => {
-        createToken().catch((e) => {
+        createToken().then(() => {
+            handleSelectorBack();
+        }).catch((e) => {
             console.log(e);
-        }); 
+        })
     };  
 
     const handleSelectorBack = () => {
         sheetRef.current.snapTo(1);
         setShow(false);
     };
+
+    const isDisabled = useMemo(() => {
+        if (!getGasEstimate) return true;
+        if (balance < getGasEstimate?.maxGasCostETH) return true;
+        else false; 
+    }, [ balance, getGasEstimate ]);
 
     const renderMPSelector = () => {
         return (
@@ -88,7 +96,9 @@ const CreateTokenSheet : React.FC<CreateTokenSheetProps> = ({ show, setShow }) =
                         <Text style={[{ color: grey }]}>{ getGasEstimate?.gasCostETH } ETH</Text>
                     </View>
                 </View>
+                { isDisabled && <Text style={{ color: red }}>Insufficient Balance.</Text> }
                 <BrandButton 
+                    disabled={isDisabled}
                     loading={_loading}
                     onPress={handleDeployToken} 
                     type="gradient" 

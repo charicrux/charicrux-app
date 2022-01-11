@@ -51,7 +51,16 @@ const HomeScreen = ({ navigation } : any) => {
 
     const injectItems = useCallback(() => {
         const newItems:IAlertItem[] = [];
-        if (!walletBalance) {
+        newItems.push({
+            title: "Beginners Guide.",
+            description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
+            button: {
+                callback: () => { navigation.navigate(Screens.Token.INFO, { organization }) },
+                title: `Buy ${organization?.symbol}`,
+            },
+            image: () => <GraphSVG width={85} />
+        });
+        if (!balanceResponse?.getWalletBalance) {
             newItems.push({
                 title: "Deposit Ethereum.",
                 description: `Wallet Balance Empty. Deposit Some Ether to Begin Your Crypto Fundraising Journey.`,
@@ -62,15 +71,6 @@ const HomeScreen = ({ navigation } : any) => {
                 image: () => <WalletAltSVG width={85} />
             });
         }
-        newItems.push({
-            title: "Beginners Guide.",
-            description: `To start, invest in ${organization?.symbol}, your token. This will also enable you to unlock the foreign portfolio.`,
-            button: {
-                callback: () => { navigation.navigate(Screens.Token.INFO, { organization }) },
-                title: `Buy ${organization?.symbol}`,
-            },
-            image: () => <GraphSVG width={85} />
-        });
         setAlertItems(newItems);
     }, [ organization, walletBalance ]); 
 

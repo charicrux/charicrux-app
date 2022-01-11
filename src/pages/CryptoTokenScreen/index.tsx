@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity, RefreshControl } from "react-native";
 import { useSelector } from "react-redux";
 import BrandGradient from "../../components/BrandGradient";
 import CryptoGraph from "../../components/CryptoGraph";
@@ -12,17 +12,25 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import AlertsCarousel, { IAlertItem } from "../HomeScreen/components/AlertsCarousel";
 import FireworksSVG from "../SVG/FireworksSVG";
 import CopyText from "../../components/CopyText";
+import { apolloClient } from "../../../App";
+import { getWalletBalanceQuery } from "../../graphql/queries/getWalletBalance";
 
 const { width, height } = Dimensions.get("window");
 
 const CryptoTokenScreen = ({ navigation, route } : any) => {
-    const { theme } = useTheme();
+    const { theme, palette } = useTheme();
 
 
     const [ currentOrganizationId, setCurrentOrganizationId ] = useState<string | null>(null);
 
     const state = useSelector((state:IRootReducer) => state);
     const organization = getUserOrganization(state);
+    const walletBalanceCache = apolloClient.readQuery({ 
+        query: getWalletBalanceQuery(),
+    })
+
+    const { getWalletBalance:walletBalance  } = walletBalanceCache ? walletBalanceCache : {} as any;
+
 
     const [ loadOrganization, { data:tokenData, error:_tokenError, loading:_tokenLoading, refetch:refetchToken }] = useLazyQuery<{ getAggregatedToken: IAggregatedTokenResponse }>(getAggregatedTokenQuery(), { 
         variables: { input: { organizationId: currentOrganizationId }}
@@ -80,9 +88,26 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
         setShowCreateToken(e);
     }
 
+    const [ loading, setLoading ] = useState(false);
+    const onRefresh = () => {
+        setLoading(true);
+        refetchToken().catch((e) => { console.log(e) }).finally(() => {
+            setLoading(false);
+        });
+    };
+
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: theme.background }]}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
+            <ScrollView 
+                contentContainerStyle={styles.scrollView}
+                refreshControl={
+                    <RefreshControl
+                        tintColor="#fff"
+                        titleColor="#fff"
+                        refreshing={loading}
+                        onRefresh={onRefresh}
+                    />
+                }>
                 { 
                     alertItems.length ? (
                         <View style={{ marginVertical:15, }}>
@@ -115,17 +140,22 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
                 }
             </ScrollView>
             <View style={[ styles.actionsContainer ]}>
+        
                 <View  style={[ styles.actions, { backgroundColor: theme.background }]}>
-                    <TouchableOpacity style={[ styles.button, { backgroundColor: theme.secondary } ]}>
-                        <Text style={[{ color: theme.text }]}>Sell</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[ styles.button, { backgroundColor: theme.background } ]}>
-                       <BrandGradient style={styles.button}>
-                            <Text style={[{ color: theme.text }]}>Buy</Text>
-                        </BrandGradient>
-                    </TouchableOpacity>
+                { !walletBalance ? <Text style={{ color: palette.red, marginBottom: 10 }}>No Balance.</Text> : null}
+                   <View style={{ display: 'flex', flexDirection: 'row'}}>
+                    <TouchableOpacity disabled={!walletBalance} style={[ styles.button, { backgroundColor: theme.secondary } ]}>
+                            <Text style={[{ color: theme.text }]}>Sell</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity disabled={!walletBalance} style={[ styles.button, { backgroundColor: theme.background } ]}>
+                        <BrandGradient style={styles.button}>
+                                <Text style={[{ color: theme.text }]}>Buy</Text>
+                            </BrandGradient>
+                        </TouchableOpacity>
+                   </View>
                 </View>
             </View>
+
             <CreateTokenSheet setShow={handleSetShow} navigation={navigation} show={showCreateToken} />  
         </SafeAreaView>
     )
@@ -161,7 +191,6 @@ const styles = StyleSheet.create({
     },
     actionsContainer: {
         width: width,
-
     },
     scrollView: {
         width: width,
@@ -173,11 +202,11 @@ const styles = StyleSheet.create({
     actions: {
         width: width,
         height: 125,
-        transform: [{ translateY: -50 }],
+        transform: [{ translateY: -75 }],
         display: 'flex',
-        flexDirection: 'row',
         justifyContent: "center",
         paddingVertical: 10,
+        alignItems: 'center',
     },
     button: {
         width: width * 0.45,

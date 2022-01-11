@@ -1,8 +1,10 @@
-import React from 'react';
+import { useMutation } from '@apollo/client';
+import React, { useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform, ScrollView, KeyboardAvoidingView  } from 'react-native';
 import BrandButton from '../../components/BrandButton';
 import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
+import { createOrganizationMutation, ICreateOrganizationMutation } from '../../graphql/mutations/createOrganization';
 import { useTheme } from '../../hooks/useTheme';
 import { Screens } from '../Navigator/enums';
 import LightbulbSVG from '../SVG/LightbulbSVG';
@@ -11,9 +13,25 @@ const {width, height} = Dimensions.get('screen');
 
 const CreateOrganizationScreen = ({navigation}: any) => {
     const { theme: { background, text } } = useTheme();
+    const [ formData, setFormData ] = useState<ICreateOrganizationMutation>({});
+
+    const [ createOrganization, { data:_data, loading, error:_error }] = useMutation(createOrganizationMutation(), {
+        variables: {
+            input: { ...formData }
+        }
+    });
+
+    const updateFormData = (key:keyof ICreateOrganizationMutation) => (e:string) => {
+        setFormData({ ...formData, [ key]: e })
+    };
+
 
     const handleSubmit = () => {
-        navigation.navigate(Screens.Initial.LAUNCH);
+        if (!formData.name && !formData.symbol && formData.description) return; 
+
+        createOrganization().finally(() => {
+            navigation.navigate(Screens.Initial.LAUNCH);
+        });
     };
 
     return(
@@ -30,21 +48,23 @@ const CreateOrganizationScreen = ({navigation}: any) => {
                             <View style={styles.form}>
                                 <View>
                                     <Text style={styles.field}>Organization Name</Text>
-                                    <BrandTextInput style={{ width: width * 0.85 }} placeholder="ex. Shoes for Education"/>
+                                    <BrandTextInput onChangeText={updateFormData('name')} style={{ width: width * 0.85 }} placeholder="ex. Shoes for Education"/>
                                 </View>
                                 <View>
                                     <Text style={styles.field}>Brief Description</Text>
-                                    <BrandTextInput style={{ width: width * 0.85 }} placeholder="Type here..."/>
+                                    <BrandTextInput onChangeText={updateFormData('description')}  style={{ width: width * 0.85 }} placeholder="Type here..."/>
                                 </View>
                                 <View>
                                     <Text style={styles.field}>Organization Symbol</Text>
-                                    <BrandTextInput style={{ width: width * 0.85 }} placeholder="ex. SFED"/>
+                                    <BrandTextInput onChangeText={updateFormData('symbol')}  style={{ width: width * 0.85 }} placeholder="ex. SFED"/>
                                 </View>
                                 <View>
                                     <Text style={styles.field}>Email</Text>
-                                    <BrandTextInput style={{ width: width * 0.85 }} placeholder="example@gmail.com"/>
+                                    <BrandTextInput onChangeText={updateFormData('email')}  style={{ width: width * 0.85 }} placeholder="example@gmail.com"/>
                                 </View>
-                                <BrandButton onPress={handleSubmit} type='gradient' title="Submit" style={{marginVertical: 25}}/>
+                               <View style={{ marginVertical: 25 }}>
+                                    <BrandButton loading={loading} onPress={handleSubmit} type='gradient' title="Submit" />
+                               </View>
                             </View>
                         </View>
                     </KeyboardAvoidingView>
@@ -70,7 +90,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: "600",
         fontSize: 25,
-        marginTop: 35,
+        marginTop: 25,
     },
     sub: {
         color: '#797979',
@@ -82,7 +102,7 @@ const styles = StyleSheet.create({
     form: {
         alignItems: 'center',
         width: width * 0.8,
-        marginVertical: height * 0.02,
+        marginTop: 5,
     },
     field: {
         color: '#fff',
