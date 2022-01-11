@@ -14,6 +14,7 @@ import DepositMethodsScreen from "../DepositMethodsScreen";
 import CryptoTokenScreen from "../CryptoTokenScreen";
 import ProfileScreen from "../ProfileScreen";
 import CreateFundraiserScreen from "../CreateFundraiserScreen";
+import ViewFundraisersScreen from "../ViewFundraisersScreen";
 
 const Stack = createStackNavigator();
 
@@ -110,6 +111,14 @@ const Navigator = () => {
                         options={{
                             headerShown: false,
                             gestureEnabled: true,
+                        }}
+                />
+                <Stack.Screen
+                        name={Screens.Fundraiser.VIEW}
+                        component={ViewFundraisersScreen}
+                        options={{
+                            headerShown: false,
+                            gestureEnabled: true
                         }}
                 />
             </Stack.Navigator>

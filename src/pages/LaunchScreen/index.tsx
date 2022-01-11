@@ -33,6 +33,7 @@ const LaunchScreen = ({ navigation } : any) => {
             <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
             <View style={{ marginTop: Platform.OS === "ios" ? "auto" : 25 }}>
                 <Text style={[ styles.notice ]}>
+                    <Text onPress={() => {navigation.navigate(Screens.Fundraiser.VIEW)}}>shfkjsbdfkjsbdf</Text>
                     By continuing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
                 </Text>
             </View>

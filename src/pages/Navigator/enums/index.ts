@@ -21,5 +21,6 @@ export namespace Screens {
     }
     export enum Fundraiser {
         CREATE = 'create-fundraiser',
+        VIEW = 'view-fundraisers'
     }
 }
