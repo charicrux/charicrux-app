@@ -66,7 +66,7 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
 
     const injectItems = useCallback(() => {
         const newItems:IAlertItem[] = [];
-        if (!tokenData && !_tokenLoading) {
+        if (!tokenData?.getAggregatedToken && !_tokenLoading) {
             newItems.push({
                 title: "Token Doesn't Exist Yet.",
                 description: `Be the one to create the token and start this organization and your journey.`,
@@ -115,7 +115,7 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
                         </View>
                     ) : <></>
                 }
-                { tokenData && (
+                { tokenData?.getAggregatedToken && (
                     <View style={styles.headerContainer}>
                         <Text style={[ styles.symbol, { color: theme.text }]}>{ token.symbol } Token</Text>
                         <Text style={[ styles.name, { color: theme.text }]}>{ token.name }</Text>
@@ -142,7 +142,7 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
             <View style={[ styles.actionsContainer ]}>
         
                 <View  style={[ styles.actions, { backgroundColor: theme.background }]}>
-                { !walletBalance ? <Text style={{ color: palette.red, marginBottom: 10 }}>No Balance.</Text> : null}
+                { !walletBalance ? <Text style={{ color: theme.grey, marginBottom: 10 }}>Deposit Ethereum to Buy / Sell.</Text> : null}
                    <View style={{ display: 'flex', flexDirection: 'row'}}>
                     <TouchableOpacity disabled={!walletBalance} style={[ styles.button, { backgroundColor: theme.secondary } ]}>
                             <Text style={[{ color: theme.text }]}>Sell</Text>

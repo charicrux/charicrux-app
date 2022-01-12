@@ -6,6 +6,7 @@ import BrandGradient from '../../components/BrandGradient';
 import BrandTextInput from '../../components/BrandTextInput';
 import { createOrganizationMutation, ICreateOrganizationMutation } from '../../graphql/mutations/createOrganization';
 import { useTheme } from '../../hooks/useTheme';
+import { emailPattern } from '../../utils/patterns';
 import { Screens } from '../Navigator/enums';
 import LightbulbSVG from '../SVG/LightbulbSVG';
 
@@ -27,7 +28,8 @@ const CreateOrganizationScreen = ({navigation}: any) => {
 
 
     const handleSubmit = () => {
-        if (!formData.name && !formData.symbol && formData.description) return; 
+        if (!formData.name || !formData.symbol || !formData.description) return; 
+        if (!formData.email || !emailPattern.test(formData?.email)) return;
 
         createOrganization().finally(() => {
             navigation.navigate(Screens.Initial.LAUNCH);
@@ -38,14 +40,15 @@ const CreateOrganizationScreen = ({navigation}: any) => {
        
             <SafeAreaView style={styles.container}>
                 <ScrollView contentContainerStyle={styles.scrollView}>
-                    <KeyboardAvoidingView behavior='position'>
+                   
                         <View style={styles.container}>
                             <View style={{height: height * 0.03}}></View>
                             <LightbulbSVG width={width * 0.25}/>
                             <Text style={styles.header}>Organization Request Form</Text>
                             <Text style={styles.sub}>Fill Out the Form and We Will Get Back to you ASAP.</Text>
+                            <KeyboardAvoidingView behavior='position'>
+                            <View style={[ styles.form, { backgroundColor: background }]}>
                          
-                            <View style={styles.form}>
                                 <View>
                                     <Text style={styles.field}>Organization Name</Text>
                                     <BrandTextInput onChangeText={updateFormData('name')} style={{ width: width * 0.85 }} placeholder="ex. Shoes for Education"/>
@@ -66,8 +69,9 @@ const CreateOrganizationScreen = ({navigation}: any) => {
                                     <BrandButton loading={loading} onPress={handleSubmit} type='gradient' title="Submit" />
                                </View>
                             </View>
+                            </KeyboardAvoidingView>
                         </View>
-                    </KeyboardAvoidingView>
+                   
                 </ScrollView>
             </SafeAreaView>
     )

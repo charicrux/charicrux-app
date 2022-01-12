@@ -37,7 +37,7 @@ const SearchTokensScreen = ({ navigation } : any) => {
                      })
                 }
                 {
-                    !items.length ? (
+                    !items.length && query ? (
                         <Text style={[{ color: theme.grey }]}>Try Searching Something Else.</Text> 
                     ) : null
                 }
