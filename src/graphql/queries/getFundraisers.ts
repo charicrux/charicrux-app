@@ -2,12 +2,15 @@ import { gql } from '@apollo/client';
 
 export const getFundraisersQuery = () => (
     gql`
-        query getFundraisers($query: String!) {
-            getFundraisers(query: $query) {
+        query getFundraiserByQuery($query: String!) {
+            getFundraiserByQuery(query: $query) {
                 _id,
                 name,
-                goal,
-                raised
+                goal
+                organization {
+                    symbol,
+                    name
+                }
             }
         }
     `

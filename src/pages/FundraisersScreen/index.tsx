@@ -1,38 +1,30 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { NavigationContainer } from '@react-navigation/native';
-import { create } from 'lodash';
 import React, { useState } from 'react';
 import {
     SafeAreaView, 
     Dimensions, 
     StyleSheet, 
     View, 
-    Text, 
-    Platform, 
-    KeyboardAvoidingView, 
-    Button,
-    ScrollView
+    ScrollView,
+    Text,
+    RefreshControl
 } from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import BrandButton from '../../components/BrandButton';
 import BrandContainer from '../../components/BrandContainer';
-import BrandGradient from '../../components/BrandGradient';
 import BrandSearchBar from '../../components/BrandSearchBar';
-import BrandTextInput from '../../components/BrandTextInput';
-import { createTokenMutation } from '../../graphql/mutations/createToken';
 import { getFundraisersQuery } from '../../graphql/queries/getFundraisers';
 import { useTheme } from '../../hooks/useTheme';
 import { Screens } from '../Navigator/enums';
-import FundraiserItem from './components/fundraiserItem';
+import FundraiserItem from './components/FundraiserItem';
+import { useQuery } from '@apollo/client';
 import { IFundraiser } from './interfaces/fundraiser.interface';
 
 const { width, height } = Dimensions.get('screen');
 
 const FundraisersScreen = ({navigation}: any) => {
-    const { theme: { background, text, grey } } = useTheme();
+    const { theme: { background, grey } } = useTheme();
 
     const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const { data: { getFundraisers:fundraisers = [] as IFundraiser[] } = {} } = useQuery(getFundraisersQuery(), {
+    const { data, loading, refetch } = useQuery(getFundraisersQuery(), {
         variables: { query: searchQuery }
     });
 
@@ -40,9 +32,15 @@ const FundraisersScreen = ({navigation}: any) => {
         navigation.navigate(Screens.Fundraiser.CREATE);
     }
 
-    const handleDonation = () => {
-
-    }
+    const handleDonation = () => {}
+    const onRefresh = () => { refetch() };
+    
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            onRefresh();
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     return(
         <SafeAreaView style={[styles.container, {backgroundColor: background}]}>
@@ -52,24 +50,44 @@ const FundraisersScreen = ({navigation}: any) => {
                     placeholder="Search Local & Foreign Fundraisers"
                 />
             </View>
-            <BrandContainer header="Fundraisers" style={{height: height * 0.6, marginTop: 30, borderRadius: 5}}>
-                <ScrollView>
-                <View style={{ marginTop: 30 }}>
-                {
-                    fundraisers?.map(({ _id, ...fundraiser } : IFundraiser) => {
-                        return (
-                            <FundraiserItem 
-                                key={_id} 
-                                handlePress={handleDonation}
-                                fundraiser={{ _id, ...fundraiser }} 
-                            />
-                        )
-                    })   
+            <BrandContainer header="Fundraisers" style={{height: height * 0.575, marginTop: 30, borderRadius: 5, minHeight: 350,}}>
+                <ScrollView refreshControl={
+                    <RefreshControl
+                        tintColor="#fff"
+                        titleColor="#fff"
+                        refreshing={loading}
+                        onRefresh={onRefresh}
+                    />
                 }
-            </View>
+                    horizontal={false}
+                    contentContainerStyle={{ 
+                        width: width * 0.9, 
+                        minHeight: height  * 0.575, 
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}    
+                >
+                    <View style={{ marginTop: 30 }}>
+                        {
+                            data?.getFundraiserByQuery?.map(({ _id, ...fundraiser } : IFundraiser) => {
+                                return (
+                                    <FundraiserItem 
+                                        key={_id} 
+                                        handlePress={handleDonation}
+                                        fundraiser={{ _id, ...fundraiser }} 
+                                    />
+                                )
+                            })   
+                        }
+                        {
+                           !data?.getFundraiserByQuery?.length && searchQuery ? (
+                               <Text style={[{ color: grey }]}>Try Searching Something Else.</Text>
+                           ) : null
+                        }
+                    </View>
                 </ScrollView>
             </BrandContainer>
-            <View style={{position: 'absolute', bottom: 25}}>
+            <View style={{ marginTop: 25 }}>
                 <BrandButton type='gradient' title='Create a Fundraiser' onPress={handleCreatePress}/>
             </View>
         </SafeAreaView>
@@ -79,7 +97,7 @@ const FundraisersScreen = ({navigation}: any) => {
 const styles = StyleSheet.create({
     container: {
         width,
-        height,
+        height:height,
         display: 'flex',
         alignItems: 'center',
     },
