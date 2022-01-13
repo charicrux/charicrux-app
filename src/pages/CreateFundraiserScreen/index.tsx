@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import BrandButton from '../../components/BrandButton';
 import BrandContainer from '../../components/BrandContainer';
@@ -13,6 +13,13 @@ const { width, height } = Dimensions.get('screen');
 
 const CreateFundraiserScreen = ({navigation}: any) => {
     const { theme: { background, text, secondary } } = useTheme();
+
+    useEffect(() => {
+        navigation?.setOptions({ 
+            headerStyle: { 
+                backgroundColor: secondary,
+            }});
+    }, [ secondary, navigation ]);
 
     const [formData, setFormData] = useState<ICreateFundraiserDTO>({});
 
@@ -83,7 +90,7 @@ const styles = StyleSheet.create({
         height: height * 0.8,
         width: width * 0.9, 
         alignItems: 'center',  
-        marginTop: 50,
+        marginTop: 10,
     },
     headerContainer: {
         minWidth: 125,

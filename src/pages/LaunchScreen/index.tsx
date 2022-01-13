@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform  } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, View, Animated, Text, Platform, TouchableOpacity, Linking  } from 'react-native';
 import BrandButton from '../../components/BrandButton';
 import BrandGradient from '../../components/BrandGradient';
 import FadeIn from '../../components/FadeIn';
@@ -11,7 +11,7 @@ import EtherIconSVG from '../SVG/EtherIconSVG';
 const { width, height } = Dimensions.get("screen");
 
 const LaunchScreen = ({ navigation } : any) => {
-    const { theme: { background, text } } = useTheme();
+    const { theme: { background, text, grey }} = useTheme();
     const [ mounted, setMounted ] = useState(false);
 
     useEffect(() => { setMounted(true )}, []);
@@ -23,6 +23,9 @@ const LaunchScreen = ({ navigation } : any) => {
     const handleLogin = () => {
         navigation.navigate(Screens.Account.LOGIN);
     }
+
+    const handleTOS = () => Linking.openURL("https://charicrux.mahitm.com/terms-of-service");
+    const handlePrivacyPolicy = () => Linking.openURL("https://charicrux.mahitm.com/privacy");
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
@@ -39,7 +42,7 @@ const LaunchScreen = ({ navigation } : any) => {
                 <BrandButton onPress={handleLogin} title="Login" style={{ marginTop: 15 }} />
                 <View style={ styles.footer}>
                     <Text style={[ styles.notice ]}>
-                        By continuing, you agree to Charicrux Technology's Terms of Service & Privacy Policy.
+                        By continuing, you agree to Charicrux Technology's <Text onPress={handleTOS} style={[ styles.underline,{textDecorationColor: grey,} ]}>Terms of Service</Text> & <Text onPress={handlePrivacyPolicy} style={[ styles.underline, {textDecorationColor: grey,} ]}>Privacy Policy</Text>.
                     </Text>
                 </View>
                 </>
@@ -102,6 +105,10 @@ const styles = StyleSheet.create({
         color: "#797979",
         marginVertical: 15,
         width: width * 0.8,
+    },
+    underline: {
+        textDecorationStyle: "solid",
+        textDecorationLine: "underline",
     }
 });
 

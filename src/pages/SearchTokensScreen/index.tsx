@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, View, Text} from "react-native";
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, View, Text, KeyboardAvoidingView} from "react-native";
 import BrandSearchBar from "../../components/BrandSearchBar";
 import { getTokensByQuery } from "../../graphql/queries/getTokensByQuery";
 import { useTheme } from "../../hooks/useTheme";
@@ -26,22 +26,26 @@ const SearchTokensScreen = ({ navigation } : any) => {
 
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: theme.background }]}>
-            <View style={{ marginVertical: 25 }}>
-                <SearchSVG width={width * 0.75}/>
-            </View>
-            <BrandSearchBar placeholder="Search Symbol, Organization, etc." setSearchQuery={setSearchQuery} />
-            <ScrollView style={{ marginTop: 25 }}>
-                {
-                    items.map((item:any) => {
-                        return <OrganizationItem handlePress={handleSelectOrganization} organization={item} key={item._id} />
-                     })
-                }
-                {
-                    !items.length && query ? (
-                        <Text style={[{ color: theme.grey }]}>Try Searching Something Else.</Text> 
-                    ) : null
-                }
-            </ScrollView>
+            <KeyboardAvoidingView behavior="position">
+                <View style={{ display: 'flex', alignItems: 'center', }}>
+                    <View style={{ marginVertical: 25 }}>
+                        <SearchSVG width={width * 0.75}/>
+                    </View>
+                    <BrandSearchBar placeholder="Search Symbol, Organization, etc." setSearchQuery={setSearchQuery} />
+                    <ScrollView style={{ marginTop: 25 }}>
+                        {
+                            items.map((item:any) => {
+                                return <OrganizationItem handlePress={handleSelectOrganization} organization={item} key={item._id} />
+                            })
+                        }
+                        {
+                            !items.length && query ? (
+                                <Text style={[{ color: theme.grey }]}>Try Searching Something Else.</Text> 
+                            ) : null
+                        }
+                    </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }

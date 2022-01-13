@@ -26,7 +26,10 @@ const FundraiserItem: React.FC<FundraiserItemProps> = ({ fundraiser, handlePress
         <FadeIn show={mounted}>
             <TouchableOpacity onPress={handleFundraiserPress} style={[ styles.container, { backgroundColor: background }]}>
                 <View style={styles.infoContainer}>
-                    <Text style={[styles.org, { color: text }]}>{ fundraiser?.organization?.symbol }</Text>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between" }}>
+                        <Text style={[styles.org, { color: text }]}>{ fundraiser?.organization?.symbol }</Text>
+                        <Text numberOfLines={1} style={[styles.orgName, { color: text }]}>{ fundraiser?.organization?.name }</Text>
+                    </View>
                     <Text style={styles.name}>{fundraiser.name}</Text>
                 </View>
                 <View style={styles.goalContainer}>
@@ -70,14 +73,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    goalAmount: {
-
-    },
+    goalAmount: {},
     org: {
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         fontSize: 15,
         fontWeight: '600',
+    },
+    orgName: {
+        fontSize: 15,
+        maxWidth: 200,
     },
     name: {
         alignItems: 'flex-start',

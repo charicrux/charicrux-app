@@ -109,8 +109,10 @@ const Navigator = () => {
                         name={Screens.Fundraiser.CREATE}
                         component={CreateFundraiserScreen}
                         options={{
-                            headerShown: false,
+                            headerShown: true,
                             gestureEnabled: true,
+                            headerBackTitleVisible: false,
+                            headerTitle: "",
                         }}
                 />
                 <Stack.Screen
@@ -118,7 +120,7 @@ const Navigator = () => {
                         component={FundraisersScreen}
                         options={{
                             headerShown: false,
-                            gestureEnabled: true
+                            gestureEnabled: true,
                         }}
                 />
             </Stack.Navigator>

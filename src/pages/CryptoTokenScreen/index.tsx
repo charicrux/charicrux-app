@@ -14,6 +14,7 @@ import FireworksSVG from "../SVG/FireworksSVG";
 import CopyText from "../../components/CopyText";
 import { apolloClient } from "../../../App";
 import { getWalletBalanceQuery } from "../../graphql/queries/getWalletBalance";
+import FadeIn from "../../components/FadeIn";
 
 const { width, height } = Dimensions.get("window");
 
@@ -108,13 +109,7 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
                         onRefresh={onRefresh}
                     />
                 }>
-                { 
-                    alertItems.length ? (
-                        <View style={{ marginVertical:15, }}>
-                            <AlertsCarousel items={alertItems}/>
-                        </View>
-                    ) : <></>
-                }
+               
                 { tokenData?.getAggregatedToken && (
                     <View style={styles.headerContainer}>
                         <Text style={[ styles.symbol, { color: theme.text }]}>{ token.symbol } Token</Text>
@@ -128,6 +123,13 @@ const CryptoTokenScreen = ({ navigation, route } : any) => {
                         balance={0.00}
                     />
                 </View>
+                { 
+                    alertItems.length ? (
+                        <FadeIn show={!!alertItems?.length} style={{ marginVertical:15, }}>
+                            <AlertsCarousel items={alertItems}/>
+                        </FadeIn>
+                    ) : <></>
+                }
                 { 
                     token?.address && (
                         <View>
@@ -187,6 +189,7 @@ const styles = StyleSheet.create({
         width: width * 0.9,
         borderRadius: 5,
         height: width * 0.9,
+        marginTop: 20,
 
     },
     actionsContainer: {
