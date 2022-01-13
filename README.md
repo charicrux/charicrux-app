@@ -7,6 +7,11 @@ Charicrux application provides organizations such as non-profits to create their
 Currently, Charicrux is deployed on iOS TestFlight and anybody with an iOS phone can download it using this 
 link: https://testflight.apple.com/join/XYe9vsjw
 
+# Current Capabilities
+
+We have enabled users to create new organizations, ERC20 tokens on-demand, and fundraisers for an oranization.
+While, our team is still continueing development of trading ERC20 tokens after deployment.
+
 <img style="min-width:350px;width:35vw" src="https://res.cloudinary.com/practicaldev/image/fetch/s--hGC8ycLj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/e8ps3o9p1nx6tp6fshdo.png" />
 
 # Run Application Locally
