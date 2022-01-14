@@ -30,10 +30,14 @@ const AlertItem : React.FC<IAlertProps> = ({ item: { image, title, description, 
                     <Text style={[ styles.title, { color: text }]}>{title}</Text>
                     <Text style={[ styles.description, { color: grey }]}>{description || ""}</Text>
                     {/* <BrandGradientText text={button?.title || ""}/> */}
-                    <TouchableOpacity onPress={button?.callback} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={[{ color: purple }]}>{ button?.title }</Text>
-                        <FontAwesomeIcon color={purple} icon={faAngleRight} />
-                    </TouchableOpacity>
+                    { 
+                        !!button?.title && (
+                            <TouchableOpacity onPress={button?.callback} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={[{ color: purple }]}>{ button?.title }</Text>
+                                <FontAwesomeIcon color={purple} icon={faAngleRight} />
+                            </TouchableOpacity>
+                        )
+                    }
                 </View>
             </View>
         </View>

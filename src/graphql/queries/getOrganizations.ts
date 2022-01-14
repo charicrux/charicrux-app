@@ -6,7 +6,8 @@ export const getOrganizationsQuery = () => (
             getOrganizations(query: $query) {
                 _id,
                 name,
-                symbol
+                symbol,
+                description,
             }
         }
     `

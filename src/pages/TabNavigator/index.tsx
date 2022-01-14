@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator, } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { TabNavigatorScreens } from "./enums";
 import HomeScreen from "../HomeScreen";
@@ -88,7 +88,8 @@ export const TabNavigator = ({ navigation, ...props } : any) => {
                     
                     <Tabs.Screen 
                         name={TabNavigatorScreens.HOME} 
-                        children={() => <HomeScreen navigation={navigation} { ...props } />}
+                        component={HomeScreen}
+                        
                     />
                      <Tabs.Screen 
                         name={TabNavigatorScreens.SEARCH_TOKENS} 

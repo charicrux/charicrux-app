@@ -1,3 +1,5 @@
+import { faEthereum } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions, StyleProp, ViewStyle } from "react-native";
 import Dash from "react-native-dash";
@@ -24,7 +26,10 @@ const CryptoGraph : React.FC<CryptoGraphProps> = ({ balance, header, style }) =>
         <View style={[styles.container, style ]}>
             <View>
                 <Text style={[ styles.header, { color: theme.text }]}>{ header || "Value" }</Text>
-                <Text style={[ styles.balanceHeader, { color: theme.text }]}>${balanceFormatted}</Text>
+                <Text style={[ styles.balanceHeader, { color: theme.text }]}>
+                    <FontAwesomeIcon style={{ marginRight: 5, }} color={theme.text} size={25} icon={faEthereum} />
+                    {balanceFormatted}
+                </Text>
             </View>
             <View style={styles.dashContainer}>
                 <Dash 
@@ -59,6 +64,9 @@ const styles = StyleSheet.create({
     balanceHeader: {
         fontWeight: '600',
         fontSize: 25,
+        display: 'flex',
+        flexDirection:'row',
+        alignItems: 'center',
     },
     dashContainer: {
         flex: 3,

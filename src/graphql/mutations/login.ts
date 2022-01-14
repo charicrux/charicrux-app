@@ -8,6 +8,7 @@ export interface ILoginDTO {
 export const loginClientMutation = gql`
         mutation loginClient($input: LoginUserDTO!) {
             loginUser(input: $input) {
+                _id,
                 email,
                 accessToken,
                 wallet { _id, address },

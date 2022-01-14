@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import BrandSearchBar from "../../components/BrandSearchBar";
 import { getOrganizationsQuery } from "../../graphql/queries/getOrganizations";
@@ -19,7 +19,7 @@ interface OrganizationScreenProps {
 const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) => {
     const { theme: { background, grey, text } } = useTheme();
     const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const { data: { getOrganizations:organizations = [] as IOrganization[] } = {} } = useQuery(getOrganizationsQuery(), {
+    const { data: { getOrganizations:organizations = [] as IOrganization[] } = {}, refetch } = useQuery(getOrganizationsQuery(), {
         variables: { query: searchQuery }
     });
 
@@ -31,6 +31,13 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
         navigation.navigate(Screens.Account.CREATEORG);
     };
 
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            refetch();
+        });
+        return unsubscribe;
+    }, [navigation]);
+
     return (
         <SafeAreaView style={[ styles.container, { backgroundColor: background }]}>
             <BuildingsSVG width={width * 0.5} />
@@ -41,7 +48,7 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
                     placeholder="Search School District, Organization, etc."
                 />
             </View>
-            <View style={{ marginTop: 30 }}>
+            <ScrollView style={{ marginTop: 30, maxHeight: height * 0.45, minHeight: 250 }}>
                 {
                     organizations?.map(({ _id, ...organization } : IOrganization) => {
                         return (
@@ -53,7 +60,7 @@ const OrganizationScreen : React.FC<OrganizationScreenProps> = ({ navigation }) 
                         )
                     })   
                 }
-            </View>
+            </ScrollView>
             <View style={{ marginTop: 25 }}>
                 <TouchableOpacity onPress={handleCreateOrganization}>
                     <Text style={[ styles.notice, { color: grey }]} >

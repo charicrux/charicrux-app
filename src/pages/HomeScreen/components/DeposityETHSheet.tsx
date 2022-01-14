@@ -11,7 +11,7 @@ import PiggyBankSVG from "../../SVG/PiggyBankSVG";
 
 const { width, height } = Dimensions.get("screen");
 
-const DeposityETHSheet = ({ navigation } : any) => {
+const DeposityETHSheet = ({ navigation, show, setShow } : any) => {
     const sheetRef = useRef<any | null>(null);
     const sheetHeight = useRef<number>(height - 200).current;
     const sheetHeightAndroid = useRef<number>(height - 100).current;
@@ -21,13 +21,13 @@ const DeposityETHSheet = ({ navigation } : any) => {
     const { theme: { background, text, grey }} = useTheme();
 
     useEffect(() => {
-        sheetRef.current.snapTo(0);
-    }, []);
+        if (show) sheetRef.current.snapTo(0);
+    }, [ show ]);
 
     const handleSkip = () => sheetRef.current.snapTo(1);
 
     const handleSelectorBack = () => {
-        
+        setShow(false);
     };
 
     const handleDepositMethods = () => navigation.navigate(Screens.Wallet.DEPOSIT_METHODS);

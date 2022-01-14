@@ -32,7 +32,7 @@ const CreateOrganizationScreen = ({navigation}: any) => {
         if (!formData.email || !emailPattern.test(formData?.email)) return;
 
         createOrganization().finally(() => {
-            navigation.navigate(Screens.Initial.LAUNCH);
+            navigation.navigate(Screens.Account.ORGANIZATIONS);
         });
     };
 
@@ -44,8 +44,8 @@ const CreateOrganizationScreen = ({navigation}: any) => {
                         <View style={styles.container}>
                             <View style={{height: height * 0.03}}></View>
                             <LightbulbSVG width={width * 0.25}/>
-                            <Text style={styles.header}>Organization Request Form</Text>
-                            <Text style={styles.sub}>Fill Out the Form and We Will Get Back to you ASAP.</Text>
+                            <Text style={styles.header}>Create Organization</Text>
+                            <Text style={styles.sub}>Fill Out the Form and We Will Deploy Your Organization.</Text>
                             <KeyboardAvoidingView behavior='position'>
                             <View style={[ styles.form, { backgroundColor: background }]}>
                          
